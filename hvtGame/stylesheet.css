@@ -1,0 +1,378 @@
+body {
+    min-width: 840px;
+    font-family: 'Arial', sans-serif;
+}
+
+header {
+    height: 120px;
+}
+
+.headerPanel {
+    height: 100px;
+    float: left;
+    background-color: #ccc;
+    margin-right: 10px;
+    border: 3px black solid;
+}
+
+/*YELLOW ASSIGN UNIT PANEL*/
+#assignUnit {
+    height: 50px;
+    background-color: rgb(255, 255, 128);
+    opacity: 0;
+    padding: 5px;
+}
+
+#assignUnit>div>* {    
+    float: right;
+}
+
+#assignUnit input {
+    width: 30px;
+    margin: 0 0 3px 0;
+}
+
+#assignUnit p {
+    margin: 0 6px 3px 0;
+}
+
+#time {
+    position: absolute;
+    margin-left: 27px;
+    top: 85px;
+    height: 20px;
+    width: 50px;
+    border: 3px solid black;
+    padding: 2px;
+    text-align: center;
+}
+
+/*STATUS OF EACH PLATOON PANEL*/
+#status {
+    width: 160px;
+    padding: 0;
+}
+
+#status .moving {
+    background: rgba(255, 255, 128,.5);
+}
+
+#status .returning {
+    background: rgba(0, 0, 255,.2);
+}
+
+#status #status1.base,#status3.base,#status1.stopped,#status3.stopped {
+    background-color: #ddd;
+}
+#status #status1.moving,#status3.moving {
+    background: rgba(255, 255, 128,.3);
+}
+#status #status1.returning,#status3.returning {
+    background: rgba(0, 0, 255,.125);
+}
+
+#status > div {
+    padding: 0 0 0 5px;
+    height: 25%;
+}
+
+#status > div  > * {
+    display: inline-block;
+    margin: 7px 0 0 0;
+    font-size: .72em;
+    padding: 0;
+    line-height: 12px; 
+}
+
+#status button {
+    float: right;
+    vertical-align: top;
+    margin: 5px 5px 0 5px;
+    font-size: .6em;
+    opacity: 0;
+}
+
+/*SCORE PANEL*/
+#scorePanel {
+    padding: 0 3px 0 3px;
+    position: absolute;
+    width: 70px;
+}
+#progShell {
+    margin: auto;
+    height: 75%;
+    width: 20px;
+    background-color: white;
+    position: relative;
+    border: 1px solid black;
+}
+
+#prog {
+    background-color: #ffff80;
+    width: 100%;
+    height: 0;
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid black;
+}
+/*SCORE PANEL*/
+
+/*CHECKBOX PANEL*/
+#cbPanel {
+    position: absolute;
+    font-size: .72em;    
+    margin-left: 10px;
+}
+#cbPanel ul {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    column-count: 4;
+    -webkit-column-count: 4;
+    padding: 0 5px 5px 0;
+}
+#cbPanel li {
+    margin: 2px 0 2px 0;
+}
+
+#cbPanel li.checked {
+    text-decoration: line-through;
+}
+
+#cbPanel input:focus {
+    outline: 0;
+}
+
+#colNames {
+    height: 20px;
+    border-left: 3px white solid;
+    margin-left: 26px;
+}
+
+#colNames div {
+    display: inline-block;
+    text-align: center;
+    margin: 0;
+}
+
+#rowNames {
+    float: left;
+    border: 3px white solid;
+    width: 20px;
+}
+
+#rowNames > div {
+    margin: 0px 5px 0px 0;
+    text-align: right;
+    position: relative;
+    width: 100%;
+}
+
+#rowNames span {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    width: 100%;
+    text-align: right;
+}
+
+#mapPanel {
+    background-color: #aaa;
+    height: 420px;
+    width: 50%;
+    min-width: 420px;
+    border: 3px black solid;
+    float: left;
+    background-image: url(map1.JPG);
+    background-size: cover;
+    font-size: 0em;
+}
+
+.mapSquare {
+    background-color: transparent;
+    display: inline-block;
+    border: 1px black solid;
+    position: relative;
+}
+
+.mapSquare.hover {
+    background-color: white;
+    opacity: 0.5;
+}
+
+.mapSquare.clicked {
+    background-color: transparent;
+    opacity: 1;
+}
+
+.plt {
+    width: 72%;
+    height: 60%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: 38% 12% 2% 12%;
+    cursor: pointer;
+}
+
+.plt.highlight {
+    border: 1px solid yellow;
+}
+
+.plt.hidden {
+    display: none !important;
+}
+
+.arrow {
+    margin: auto;
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;   
+}
+
+.arrow.moving {
+    background-color: yellow;
+}
+.arrow.returning {
+    background-color: #3d7eff;
+}
+       
+.x {
+    width: 100%;
+    height: 8px;
+}
+
+.y {
+    width: 8px;
+    height: 100%;
+}
+
+.endarrow {
+    height: 0;
+    width: 0;
+    margin: auto;
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 1;
+}
+
+.endarrow.moving {
+    border: 8px solid yellow;
+}
+
+.endarrow.returning {
+    border: 8px solid #3d7eff;
+}
+
+.endarrow.up {
+    bottom: 1px;
+    top: auto;
+    border-top: 0px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+}
+
+.endarrow.down {
+    top: 1px;
+    bottom: auto;
+    border-bottom: 0px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+}
+.endarrow.left {
+    left: auto;
+    right: 1px;
+    border-left: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+.endarrow.right {
+    left: 1px;
+    right: auto;
+    border-right: 0px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+.endpoint {
+    height: 10px;
+    width: 10px;
+    border-radius: 100%;
+}
+
+.panel {
+    float: left;
+    background-color: #ccc;
+    width: 40%;
+    min-width: 356px;
+    margin-left: 10px;
+    border: 3px black solid; 
+    overflow: hidden;
+}
+
+.half {
+    display: inline-block;
+    width: 49.25%;
+    margin: 0;
+    height: 100%;
+    
+}
+
+.intelTBs {
+    width: 98%;
+    margin: auto;
+    background-color: #fff;
+    border: 1px black solid;
+    padding: 0;
+    height: 44%;
+    overflow-y: scroll;
+    margin-top: 5px;
+    vertical-align: bottom;
+}
+
+
+.intelTBs p {
+    margin: 0 0 0 3px;
+    font-size: .75em;
+}
+
+h3 {
+    margin: 0;
+    text-align: center;
+    background-color: #ddd;   
+}
+
+h4 {
+    font-size: .75em;
+    margin: 0;
+    text-align: center;
+    background-color: #cbc1f0;
+}
+
+#capturePanel {
+    position: absolute;
+}
+
+#captureTB {
+    width: 95%;
+    margin: auto;
+    margin-top: 5px;
+    background-color: white;
+    height: 75%;
+    border: 1px black solid;
+    overflow-y: scroll;
+}
+
+#captureTB p {
+    margin: 0 0 0 3px;
+    font-size: .75em;
+}
+
+
+
+
