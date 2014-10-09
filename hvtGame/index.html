@@ -59,16 +59,25 @@
             <div class = "plt hidden" id="plt4" style="background-image: url(plt4.png)"></div>
         </div>
         <div id="intelPanel" class="panel">
-            <h3>Intel</h3>
+            <div id="intelHeading">
+                <h3>Intel</h3>
+                <ul>
+                    <li><input type="checkbox" name="intelCB" checked=true value="1">1</li>
+                    <li><input type="checkbox" name="intelCB" checked=true value="2">2</li>
+                    <li><input type="checkbox" name="intelCB" checked=true value="3">3</li>
+                    <li><input type="checkbox" name="intelCB" checked=true value="4">4</li>
+                </ul>
+            </div>
+            
             <div class="half">
-                <div id='intel1' class="intelTBs">
+                <div id='intel1' class="intelTBs vis">
                     <h4>1</h4>
                 </div>
-                <div id='intel2' class="intelTBs"><h4>2</h4></div>
+                <div id='intel2' class="intelTBs vis"><h4>2</h4></div>
             </div>
             <div class="half">
-                <div id='intel3' class="intelTBs"><h4>3</h4></div>
-                <div id='intel4' class="intelTBs"><h4>4</h4></div>
+                <div id='intel3' class="intelTBs vis"><h4>3</h4></div>
+                <div id='intel4' class="intelTBs vis"><h4>4</h4></div>
             </div>
         </div>
         

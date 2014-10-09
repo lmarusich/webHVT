@@ -1,12 +1,31 @@
 $(document).ready(function(){
+    var $intelShare = true;
+    
     var $nHvts = 15;
     var $elapsedTime = 0;
     var $score = 0;
     var $nHvts = 15;
     var $maxScore = $nHvts * 5;
+    var $srcAccuracy = shuffle([1,2,2,3]);
+    console.log($srcAccuracy);
+    
+    if ($intelShare) {
+        //define intel object
+        function Intel(id,acc) {
+            this.id = id;
+            this.acc = acc;
+        }
+    }
+    
+    //make array of 4 intel groups
+    var $intels = [];
+    for (i=0; i<4; i++){
+        $intels[i] = new Intel(i,$srcAccuracy[i]);
+    }
+    console.log($intels);
     
     //define platoon object
-    function Plt(homeSq, icon, id) {
+    function Plt(homeSq, icon, id, acc) {
         this.homeSq = homeSq;
         this.icon = icon;
         this.id = id;
@@ -19,15 +38,20 @@ $(document).ready(function(){
         this.xfirst = true;
         this.msg = "";
         this.points = 0;
+        this.accuracy = acc;
     }
     
+    var $accs = shuffle([1, 1, .5, .5]);
+
     //make array of 4 platoons
     var $plts = [
-        new Plt("#sq90","plt1.png","plt1"),
-        new Plt("#sq91","plt2.png","plt2"),
-        new Plt("#sq104","plt3.png","plt3"),
-        new Plt("#sq105","plt4.png","plt4")
-    ]
+        new Plt("#sq90","plt1.png","plt1",$accs[0]),
+        new Plt("#sq91","plt2.png","plt2",$accs[1]),
+        new Plt("#sq104","plt3.png","plt3",$accs[2]),
+        new Plt("#sq105","plt4.png","plt4",$accs[3])
+    ];
+
+    console.log($plts);
     
     //define target object
     function target(loc,startTime) {
@@ -45,7 +69,7 @@ $(document).ready(function(){
         while ($excluded.indexOf($temploc) != -1){
             $temploc = Math.floor(Math.random() * 196);
         }
-        var $temptime = i*1 + 5;
+        var $temptime = i*15 + 5;
         $hvts[i] = new target($temploc,$temptime);
     }
 
@@ -56,9 +80,7 @@ $(document).ready(function(){
     
     //add platoons to base location
     for (i=0; i<$plts.length; i++) {
-        //$($plts[i].homeSq).append('<div class="plt" id=' + $plts[i].id + ' style="background-image: url(' + $plts[i].icon + ')"></div>');
         $($plts[i].homeSq).append($('#plt' + (i+1)).toggleClass('hidden'));
-       // $('#plt' + (i+1)).toggleClass('hidden');
     }
     
     //add row and column names
@@ -129,7 +151,25 @@ $(document).ready(function(){
     });
     
     $('input[type=checkbox]').on('click',function() {
-        $(this).parent().toggleClass('checked');
+        if ($(this).attr('name') == 'hvtCB'){
+            $(this).parent().toggleClass('checked');
+        }
+        
+        if ($(this).attr("name") == 'intelCB'){
+            var $whichIntel = $(this).attr('value');
+            if (!$(this).prop('checked')){
+                //hide the corresponding intel window
+                $('#intel' + $whichIntel).toggleClass('vis').fadeTo('slow',0, function() {
+                    var $tbheight = parseInt($(this).siblings('.vis').css('height'));
+                    $(this).hide(500).siblings('.vis').animate({height: $tbheight*2+7},500);                  
+                });
+            }
+            else {
+                //show the corresponding intel window
+                var $tbheight = parseInt($('#intel' + $whichIntel).siblings('.vis').css('height'));     
+                $('#intel' + $whichIntel).toggleClass('vis').fadeTo(500,1).siblings('.vis').animate({height: ($tbheight-7)/2},500);
+            }
+        } 
     });
     
     $('#status button').on('click',function() {
@@ -188,7 +228,14 @@ $(document).ready(function(){
                     if ($hvts[j].status == "active") {             
                         if (getSq($plts[i].currentRow+$plts[i].currentCol) == $hvts[j].loc){  
                             //capture or false alarm
-                            var $capture = Math.floor(Math.random() * 2);
+                            //look at accuracy of current platoon
+                            var $capture = -1;
+                            if ($plts[i].accuracy == 1) { //capture
+                                $capture = 1;
+                            }
+                            else if ($plts[i].accuracy == .5) {//random
+                                $capture = Math.floor(Math.random() * 2);
+                            }
                             if ($capture > 0) {
                                 $hvts[j].status = "captured";
                                 $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " captured";
@@ -214,11 +261,74 @@ $(document).ready(function(){
             }
         }
         
-        //activate targets
+        //activate targets, add intel notifications
         for (i=0; i<$nHvts; i++){
             if ($elapsedTime == $hvts[i].startTime){
                 $hvts[i].status = "active";
-                $('.intelTBs').append('<p>HVT' + (i+1) + ' sighted at ' + getCoords($hvts[i].loc + 1) + '</p>');
+                
+                for (j=0; j<4; j++){
+                    
+                    var $reportedSq = getCoords($hvts[i].loc + 1)               
+                    var $targRow = $reportedSq.substr(0,1).charCodeAt(0) - letter;
+                    var $targCol = parseInt($reportedSq.substr(1)) - 1;
+                    
+                    var $accuracy = $srcAccuracy[j];
+                    var $possibleSqs = [];
+                
+                    if ($accuracy < 3) {
+                        //get 9 surrounding squares (less if near edge)
+                        for (k=-1; k<2; k++){
+                            for (l=-1; l<2; l++) {
+                                $tempRow = $targRow + k;
+                                $tempCol = $targCol + l;
+                                //make sure it's within bounds
+                                if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
+                                    $tempRow = String.fromCharCode($tempRow + letter);
+                                    $tempCol = $tempCol + 1;
+                                    $possibleSqs.push($tempRow + $tempCol);
+                                }
+                            }
+                        }
+                        
+                        if ($accuracy == 1) {
+                            //.75 correct square, .25 one of the surrounding 9
+                            var $randNum = Math.floor(Math.random() * 4);
+                            if ($randNum < 3) {
+                                //reported square is accurate
+                            }
+                            else {
+                                var $randNum = Math.floor(Math.random() * $possibleSqs.length);
+                                $reportedSq = $possibleSqs[$randNum];
+                            }
+                        }
+                        else if ($accuracy == 2) {
+                            //pick one of these 9 randomly
+                            var $randNum = Math.floor(Math.random() * $possibleSqs.length);
+                            $reportedSq = $possibleSqs[$randNum];
+                        }
+                    }
+                        
+                    else if ($accuracy == 3) {
+                        //get 25 surrounding squares (less if near edge)
+                        for (k=-2; k<3; k++){
+                            for (l=-2; l<3; l++) {
+                                $tempRow = $targRow + k;
+                                $tempCol = $targCol + l;
+                                //make sure it's within bounds
+                                if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
+                                    $tempRow = String.fromCharCode($tempRow + letter);
+                                    $tempCol = $tempCol + 1;
+                                    $possibleSqs.push($tempRow + $tempCol);
+                                }
+                            }
+                        }
+                        //pick one of these randomly
+                        var $randNum = Math.floor(Math.random() * $possibleSqs.length);
+                        $reportedSq = $possibleSqs[$randNum];
+                    }
+                                    
+                    $('#intel' + (j+1)).append('<p>HVT' + (i+1) + ' sighted at ' + $reportedSq + '</p>');
+                }
             }
         }      
     }, 1000);
@@ -229,7 +339,6 @@ $(window).resize(function(){
     changeHeight();
 });
 
-
 function changeHeight() {
     var $totalWidth = parseInt($('#mapPanel').css('width'));
     $('#mapPanel').css('width',Math.floor($totalWidth/14)*14);
@@ -238,8 +347,7 @@ function changeHeight() {
     $('.mapSquare').css({'width': Math.floor($totalWidth/14) - 2, 'height': Math.floor($totalWidth/14) - 2 });
     $('#intelPanel').css('height',$totalWidth/3 * 2);
     $('#rowNames>div').css('height',Math.floor($totalWidth/14));
-    $('#rowNames span').css('top',parseInt($('#rowNames div').css('height'))/2 - parseInt($('#rowNames span').css('height'))/2);
-    
+    $('#rowNames span').css('top',parseInt($('#rowNames div').css('height'))/2 - parseInt($('#rowNames span').css('height'))/2);  
     $('#colNames>div').css('width',Math.floor($totalWidth/14));
 
     var $mapRight2 = $('#mapPanel').position().left + $totalWidth;
@@ -248,7 +356,7 @@ function changeHeight() {
     $('#cbPanel').css('left',$('#intelPanel').position().left);
     $('#cbPanel').css('width',$('#intelPanel').css('width'));
     $('#assignUnit').css('margin-left',$('#mapPanel').position().left-7);
-    $('#capturePanel').css('height',$totalWidth/4);
+    $('#capturePanel').css('height',$totalWidth/3.5);
     $('#capturePanel').css('width',$('#intelPanel').css('width'));
     $('#capturePanel').css('top',$mapBottom - parseInt($('#capturePanel').css('height')));
     $('#capturePanel').css('left',$('#intelPanel').position().left);
@@ -278,25 +386,17 @@ function timer($elapsedTime) {
 
 function addArrows($whichPlt,$goal,$curr,$xfirst,$status) {
     var $goalSq = getSq($goal[1] + $goal[0]);
-    var $currSq = getSq($curr[1] + $curr[0]);
-    
+    var $currSq = getSq($curr[1] + $curr[0]);    
     var $nCols = ($curr[0] - $goal[0]);
     var $nRows = ($curr[1].charCodeAt(0) - $goal[1].charCodeAt(0));   
-    $('<div class="arrow endpoint ' + $whichPlt + ' ' + $status + '"></div>').hide().appendTo(['#sq' + $currSq, '#sq' + $goalSq]).fadeIn('slow');
     
     if ($xfirst){
-        if ($nCols != 0) { 
-            $currSq = addArrow($nCols,$currSq,$whichPlt,'i','x',$status);
-             $('<div class="arrow endpoint ' + $whichPlt + ' ' + $status + '"></div>').hide().appendTo('#sq' + $currSq).fadeIn('fast');
-        }
+        if ($nCols != 0) { $currSq = addArrow($nCols,$currSq,$whichPlt,'i','x',$status); }
         if ($nRows != 0) { addArrow($nRows,$currSq,$whichPlt,'14 * i','y',$status); }
     }
     
     else {
-        if ($nRows!= 0) { 
-            $currSq = addArrow($nRows,$currSq,$whichPlt,'14 * i','y',$status); 
-            $('<div class="arrow endpoint ' + $whichPlt + ' ' + $status + '"></div>').hide().appendTo('#sq' + $currSq).fadeIn('fast');
-        }
+        if ($nRows!= 0) { $currSq = addArrow($nRows,$currSq,$whichPlt,'14 * i','y',$status); }
         if ($nCols != 0) { addArrow($nCols,$currSq,$whichPlt,'i','x',$status); }
     }
 }
@@ -313,7 +413,9 @@ function addArrow($nSteps,$refSq,$whichPlt,$stepSize,$whichLeg,$status) {
         else { $dir = 'down'; }
     }
     
-    for (i=1; i <= Math.abs($nSteps); i++) {       
+    $('<div class="arrow endpoint ' + $dir + ' ' + $whichPlt + ' ' + $whichLeg + ' ' + $status + '"></div>').hide().appendTo('#sq' + $refSq).fadeIn('fast');
+    
+    for (i=1; i <= Math.abs($nSteps); i++) {        
         if (i == Math.abs($nSteps)) {
             $('<div class="endarrow ' + $dir + ' ' + $whichPlt + ' ' + $status + '"></div>').hide().appendTo('#sq' + (eval($expr))).fadeIn('fast');
             return eval($expr);
@@ -355,7 +457,6 @@ function startPlt($plts,$index) {
     var $goal = [($plts[$index].goalCol), $plts[$index].goalRow];
     var $curr = [($plts[$index].currentCol), $plts[$index].currentRow];
     addArrows($index+1,$goal,$curr,$plts[$index].xfirst,$plts[$index].status);          
-
 }
 
 function stopPlt($plts,$index,$score,$maxScore) {
@@ -377,14 +478,17 @@ function stopPlt($plts,$index,$score,$maxScore) {
             $('#scorePanel strong').html($score);
             $('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
             $plts[$index].points = 0;
+            
+            if ($score == $maxScore) {
+                //game is over
+            }
         }
     }
     $plts[$index].status = $status;
     
     //disable the appropriate button and change status
     $('#status' + ($index+1) + ' p').html('Platoon ' + ($index+1) + $title);
-    $('#status' + ($index+1) + ' p').parent().removeClass();
-    $('#status' + ($index+1) + ' p').parent().addClass($status);
+    $('#status' + ($index+1) + ' p').parent().removeClass().addClass($status);
     $('#status' + ($index+1) + ' button').fadeTo('fast',0);
     
     //remove arrows
@@ -393,31 +497,52 @@ function stopPlt($plts,$index,$score,$maxScore) {
     });
     
     //make platoon reappear
-    
     //see if there's already a unit there and hide it if so
     if ($('#sq' + $currSq).children('.plt').length > 0) {
         var $children = $('#sq' + $currSq).children('.plt');
+        
         if ($children.length == 1) {
-            var $which = parseInt($children.attr('id').substr(3))-1;
-            if ((($plts[$which].status == "stopped")||($plts[$which].status == "base")) && (!$children.hasClass('hidden'))){
-                $children.toggleClass('hidden');  
-                console.log('test');
+            //if only unit is the current one (movement just started)
+            if (($children).attr('id') == 'plt' + ($index + 1)){
+                $('#plt' + ($index+1)).fadeIn('fast');
+                return $score;
+            }
+            else {
+                var $which = parseInt($children.attr('id').substr(3))-1;
+                if ((($plts[$which].status == "stopped")||($plts[$which].status == "base")) && (!$children.hasClass('hidden'))){
+                    $children.toggleClass('hidden');  
+                }
             }
         }
         else {
             for (i=0; i<$children.length; i++){
                 var $which = parseInt($($children[i]).attr('id').substr(3))-1;
-                if (($plts[$which].status == "stopped") && (!$($children[i]).hasClass('hidden'))){
+                if ((($plts[$which].status == "stopped")||($plts[$which].status == "base")) && (!$($children[i]).hasClass('hidden')) && ($which!=$index)){
                     $($children[i]).toggleClass('hidden');  
+                }
+                else if ($which == $index) {
+                    $('#plt' + ($which + 1)).fadeIn('fast');
                 }
             }
         }
     }
+    
     $('#plt' + ($index+1)).appendTo('#sq' + $currSq).fadeIn('fast');
-    
-  
-    
    return $score
+}
+
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    
+    while (0 != currentIndex) {
+        randomIndex = Math.floor(Math.random()*currentIndex);
+        currentIndex -= 1;
+        
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
 }
 
     

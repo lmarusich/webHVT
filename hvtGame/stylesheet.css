@@ -49,7 +49,7 @@ header {
 
 /*STATUS OF EACH PLATOON PANEL*/
 #status {
-    width: 160px;
+    width: 150px;
     padding: 0;
 }
 
@@ -249,6 +249,26 @@ header {
     height: 100%;
 }
 
+.endpoint.up {
+    height: 50%;
+    bottom: 50%;
+}
+
+.endpoint.down {
+    height: 50%;
+    top: 50%;
+}
+
+.endpoint.left {
+    width: 50%;
+    right: 50%;
+}
+
+.endpoint.right {
+    width: 50%;
+    left: 50%;
+}
+
 .endarrow {
     height: 0;
     width: 0;
@@ -262,47 +282,36 @@ header {
 }
 
 .endarrow.moving {
-    border: 8px solid yellow;
+    border: 10px solid yellow;
 }
 
 .endarrow.returning {
-    border: 8px solid #3d7eff;
+    border: 10px solid #3d7eff;
 }
 
 .endarrow.up {
-    bottom: 1px;
     top: auto;
     border-top: 0px;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
 }
-
 .endarrow.down {
-    top: 1px;
     bottom: auto;
     border-bottom: 0px;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
+    border-left-color: transparent;
+    border-right-color: transparent;
 }
 .endarrow.left {
     left: auto;
-    right: 1px;
     border-left: 0px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 .endarrow.right {
-    left: 1px;
     right: auto;
     border-right: 0px;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-}
-
-.endpoint {
-    height: 10px;
-    width: 10px;
-    border-radius: 100%;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
 }
 
 .panel {
@@ -315,12 +324,36 @@ header {
     overflow: hidden;
 }
 
+#intelHeading {
+    width: 100%;
+    margin: auto;
+    background-color: #ddd;
+}
+
+#intelHeading ul {
+    display:inline;
+    float: right;
+    margin: 0 5px 0 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#intelHeading h3 {
+    margin-left: 45%;
+    display: inline;
+}
+
+#intelHeading li {
+    display: inline;
+}
+
+
 .half {
     display: inline-block;
     width: 49.25%;
     margin: 0;
-    height: 100%;
-    
+    height: 90%;
+    vertical-align: top;
 }
 
 .intelTBs {
@@ -329,12 +362,11 @@ header {
     background-color: #fff;
     border: 1px black solid;
     padding: 0;
-    height: 44%;
+    height: 48%;
     overflow-y: scroll;
     margin-top: 5px;
-    vertical-align: bottom;
+    display: block;
 }
-
 
 .intelTBs p {
     margin: 0 0 0 3px;
