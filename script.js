@@ -6,21 +6,29 @@ $(document).ready(function(){
     var $elapsedTime = 0;
     var $score = 0;
     var $maxScore = $nHvts * 2;
-    var $srcAccuracy = shuffle([1,2,2,3]);
+    var $hvtPoints = 2;
+    var $lvtPoints = 1;
+    var $srcAccuracy = shuffle([1,1]);
+    // 1 means 75% at indicated square, 2 means equal probs for 9 squares, 3 means equal for 25 squares
+    // make them both 1s for now
+    var $srcRisk = shuffle(["high", "low"]);
+    //randomize which source is a gamble vs a sure thing
     console.log($srcAccuracy);
     
     if ($intelShare) {
         //define intel object
-        function Intel(id,acc) {
+        function Intel(id,acc,risk) {
             this.id = id;
             this.acc = acc;
+            this.risk = risk;
         }
     }
     
     //make array of 4 intel groups
+    //need to change this to 2
     var $intels = [];
-    for (i=0; i<4; i++){
-        $intels[i] = new Intel(i,$srcAccuracy[i]);
+    for (i=0; i<2; i++){
+        $intels[i] = new Intel(i,$srcAccuracy[i],$srcRisk[i]);
     }
     console.log($intels);
     
@@ -225,7 +233,7 @@ $(document).ready(function(){
                             if ($capture > 0) {
                                 $hvts[j].status = "captured";
                                 $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " captured";
-                                $plts[i].points = 5;
+                                $plts[i].points = $hvtPoints;
                             }
                             else {
                                 $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " false alarm";
@@ -252,7 +260,8 @@ $(document).ready(function(){
             if ($elapsedTime == $hvts[i].startTime){
                 $hvts[i].status = "active";
                 
-                for (j=0; j<4; j++){
+                //go through ***4*** intel boxes (need to change this to 2)
+                for (j=0; j<2; j++){
                     
                     var $reportedSq = getCoords($hvts[i].loc + 1)               
                     var $targRow = $reportedSq.substr(0,1).charCodeAt(0) - letter;
@@ -262,7 +271,7 @@ $(document).ready(function(){
                     var $possibleSqs = [];
                 
                     if ($accuracy < 3) {
-                        //get 9 surrounding squares (less if near edge)
+                        //get 8 surrounding squares (less if near edge) + indicated square (9 possibilites)
                         for (k=-1; k<2; k++){
                             for (l=-1; l<2; l++) {
                                 $tempRow = $targRow + k;
@@ -296,6 +305,7 @@ $(document).ready(function(){
                         
                     else if ($accuracy == 3) {
                         //get 25 surrounding squares (less if near edge)
+                        //let's not do this one
                         for (k=-2; k<3; k++){
                             for (l=-2; l<3; l++) {
                                 $tempRow = $targRow + k;
@@ -312,8 +322,22 @@ $(document).ready(function(){
                         var $randNum = Math.floor(Math.random() * $possibleSqs.length);
                         $reportedSq = $possibleSqs[$randNum];
                     }
+                    
+                    var $risk = $srcRisk[j];
+                    
+                    //for now, just change what each source says (LVT/HVT)
+                    //will need to add a list of low value targets later
+                    
+                    if ($risk == "high"){
+                                            $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
+                    } else {
+                        
+                          $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">LVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
+                    }
+                    
+                    
                                     
-                    $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
+
                     
                     $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>').click(function() {
                         $(this).find('button').hide();
@@ -342,7 +366,7 @@ function changeHeight() {
     $totalWidth = parseInt($('#mapPanel').css('width'));
     $('#mapPanel').css('height',$totalWidth);
     $('.mapSquare').css({'width': Math.floor($totalWidth/14) - 2, 'height': Math.floor($totalWidth/14) - 2 });
-    $('#intelPanel').css('height',$totalWidth/3*1.5);
+    $('#intelPanel').css('height',$totalWidth/3 *1.7);
     $('#rowNames>div').css('height',Math.floor($totalWidth/14));
     $('#rowNames span').css('top',parseInt($('#rowNames div').css('height'))/2 - parseInt($('#rowNames span').css('height'))/2);  
     $('#colNames>div').css('width',Math.floor($totalWidth/14));
@@ -353,7 +377,7 @@ function changeHeight() {
     $('#cbPanel').css('left',$('#intelPanel').position().left);
     $('#cbPanel').css('width',$('#intelPanel').css('width'));
     $('#assignUnit').css('margin-left',$('#mapPanel').position().left-7);
-    $('#capturePanel').css('height',$totalWidth/3.5);
+    $('#capturePanel').css('height',$totalWidth/3 * 1.25);
     $('#capturePanel').css('width',$('#intelPanel').css('width'));
     $('#capturePanel').css('top',$mapBottom - parseInt($('#capturePanel').css('height')));
     $('#capturePanel').css('left',$('#intelPanel').position().left);

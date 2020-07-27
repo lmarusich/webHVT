@@ -355,7 +355,7 @@ header {
     background-color: #fff;
     border: 1px black solid;
     padding: 0;
-    height: 93%;
+    height: 98%;
     overflow-y: scroll;
     margin-top: 5px;
     display: block;
@@ -400,7 +400,7 @@ h4 {
     margin: auto;
     margin-top: 5px;
     background-color: white;
-    height: 75%;
+    height: 85%;
     border: 1px black solid;
     overflow-y: scroll;
 }
