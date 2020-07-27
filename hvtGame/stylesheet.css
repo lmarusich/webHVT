@@ -96,7 +96,7 @@ header {
 #scorePanel {
     padding: 0 3px 0 3px;
     position: absolute;
-    width: 70px;
+    width: 100px;
 }
 #progShell {
     margin: auto;
@@ -130,6 +130,7 @@ header {
     column-count: 4;
     -webkit-column-count: 4;
     padding: 0 5px 5px 0;
+    list-style-type: none;
 }
 #cbPanel li {
     margin: 2px 0 2px 0;
@@ -330,14 +331,6 @@ header {
     background-color: #ddd;
 }
 
-#intelHeading ul {
-    display:inline;
-    float: right;
-    margin: 0 5px 0 0;
-    padding: 0;
-    list-style-type: none;
-}
-
 #intelHeading h3 {
     margin-left: 45%;
     display: inline;
@@ -362,7 +355,7 @@ header {
     background-color: #fff;
     border: 1px black solid;
     padding: 0;
-    height: 48%;
+    height: 93%;
     overflow-y: scroll;
     margin-top: 5px;
     display: block;
@@ -371,6 +364,18 @@ header {
 .intelTBs p {
     margin: 0 0 0 3px;
     font-size: .75em;
+}
+
+.hvtinfo {
+    line-height: 2;
+}
+
+.hvtinfo span {
+    display: none;
+}
+
+.hvtinfo button {
+    font-size: .8em;
 }
 
 h3 {

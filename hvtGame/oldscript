@@ -2,10 +2,10 @@ $(document).ready(function(){
     var $intelShare = true;
     
     var $nHvts = 15;
-    var hvtInterval = 5;
     var $elapsedTime = 0;
     var $score = 0;
-    var $maxScore = $nHvts * 2;
+    var $nHvts = 15;
+    var $maxScore = $nHvts * 5;
     var $srcAccuracy = shuffle([1,2,2,3]);
     console.log($srcAccuracy);
     
@@ -69,7 +69,7 @@ $(document).ready(function(){
         while ($excluded.indexOf($temploc) != -1){
             $temploc = Math.floor(Math.random() * 196);
         }
-        var $temptime = i*hvtInterval + 5;
+        var $temptime = i*15 + 5;
         $hvts[i] = new target($temploc,$temptime);
     }
 
@@ -153,14 +153,28 @@ $(document).ready(function(){
     $('input[type=checkbox]').on('click',function() {
         if ($(this).attr('name') == 'hvtCB'){
             $(this).parent().toggleClass('checked');
-        }   
+        }
+        
+        if ($(this).attr("name") == 'intelCB'){
+            var $whichIntel = $(this).attr('value');
+            if (!$(this).prop('checked')){
+                //hide the corresponding intel window
+                $('#intel' + $whichIntel).toggleClass('vis').fadeTo('slow',0, function() {
+                    var $tbheight = parseInt($(this).siblings('.vis').css('height'));
+                    $(this).hide(500).siblings('.vis').animate({height: $tbheight*2+7},500);                  
+                });
+            }
+            else {
+                //show the corresponding intel window
+                var $tbheight = parseInt($('#intel' + $whichIntel).siblings('.vis').css('height'));     
+                $('#intel' + $whichIntel).toggleClass('vis').fadeTo(500,1).siblings('.vis').animate({height: ($tbheight-7)/2},500);
+            }
+        } 
     });
     
     $('#status button').on('click',function() {
         $score = stopPlt($plts,parseInt($(this).parent().attr('id').substr(6))-1,$score,$maxScore);
     });
-    
-
     
     setInterval(function() {
         $elapsedTime = timer($elapsedTime);
@@ -313,18 +327,7 @@ $(document).ready(function(){
                         $reportedSq = $possibleSqs[$randNum];
                     }
                                     
-                    $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
-                    
-                    $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>').click(function() {
-                        $(this).find('button').hide();
-                        $(this).find('span').fadeIn('fast');
-                        $('.intelTBs #info' + i).not(this).find('button').prop('disabled', true);
-                        //which hvt line is this?
-                        $temphvt = $(this).attr('id').substr(4);
-                        $('.intelTBs #info' + $temphvt).not(this).find('button').prop('disabled', true);
-                        $('.intelTBs #info' + $temphvt).not(this).css('color', 'lightgray');
-                    });
-                    
+                    $('#intel' + (j+1)).append('<p>HVT' + (i+1) + ' sighted at ' + $reportedSq + '</p>');
                 }
             }
         }      
@@ -342,7 +345,7 @@ function changeHeight() {
     $totalWidth = parseInt($('#mapPanel').css('width'));
     $('#mapPanel').css('height',$totalWidth);
     $('.mapSquare').css({'width': Math.floor($totalWidth/14) - 2, 'height': Math.floor($totalWidth/14) - 2 });
-    $('#intelPanel').css('height',$totalWidth/3*1.5);
+    $('#intelPanel').css('height',$totalWidth/3 * 2);
     $('#rowNames>div').css('height',Math.floor($totalWidth/14));
     $('#rowNames span').css('top',parseInt($('#rowNames div').css('height'))/2 - parseInt($('#rowNames span').css('height'))/2);  
     $('#colNames>div').css('width',Math.floor($totalWidth/14));
@@ -472,7 +475,7 @@ function stopPlt($plts,$index,$score,$maxScore) {
         if ($plts[$index].points > 0) {
             //update score progress bar
             $score = $score + $plts[$index].points;
-            $('#scorePanel strong').html($score + "/30");
+            $('#scorePanel strong').html($score);
             $('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
             $plts[$index].points = 0;
             
