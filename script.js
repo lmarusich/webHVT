@@ -1,39 +1,38 @@
+//will putting the variables back in the function prevent people from being able to see the information?
+var $nHvts = 15;
+var $startTime = 5;
+var hvtInterval = 5;
+var $elapsedTime = 0;
+var $score = 0;
+var $maxScore = $nHvts * 2;
+var $hvtPoints = 2;
+var $lvtPoints = 1;
+var $srcAccuracy = shuffle([1,1]);
+// 1 means 75% at indicated square, 2 means equal probs for 9 squares, 3 means equal for 25 squares
+// make them both 1s for now, maybe change 75% to 50%
+var $srcRisk = shuffle(["high", "low"]);
+//randomize which source is a gamble vs a sure thing
+var $hvts = [];
+var $intels = [];
+var $plts = [];
+
 $(document).ready(function(){
-    var $intelShare = true;
     
-    var $nHvts = 15;
-    var hvtInterval = 5;
-    var $elapsedTime = 0;
-    var $score = 0;
-    var $maxScore = $nHvts * 2;
-    var $hvtPoints = 2;
-    var $lvtPoints = 1;
-    var $srcAccuracy = shuffle([1,1]);
-    // 1 means 75% at indicated square, 2 means equal probs for 9 squares, 3 means equal for 25 squares
-    // make them both 1s for now
-    var $srcRisk = shuffle(["high", "low"]);
-    //randomize which source is a gamble vs a sure thing
-    console.log($srcAccuracy);
-    
-    if ($intelShare) {
-        //define intel object
-        function Intel(id,acc,risk) {
-            this.id = id;
-            this.acc = acc;
-            this.risk = risk;
-        }
+    //define intel object
+    function Intel(id,acc,risk) {
+        this.id = id;
+        this.acc = acc;
+        this.risk = risk;
     }
-    
-    //make array of 4 intel groups
-    //need to change this to 2
-    var $intels = [];
+
+    //make array of 2 intel groups
     for (i=0; i<2; i++){
         $intels[i] = new Intel(i,$srcAccuracy[i],$srcRisk[i]);
     }
     console.log($intels);
     
     //define platoon object
-    function Plt(homeSq, icon, id, acc) {
+    function Plt(homeSq, icon, id) {
         this.homeSq = homeSq;
         this.icon = icon;
         this.id = id;
@@ -46,17 +45,17 @@ $(document).ready(function(){
         this.xfirst = true;
         this.msg = "";
         this.points = 0;
-        this.accuracy = acc;
+        //this.accuracy = acc;
     }
     
-    var $accs = shuffle([1, 1, .5, .5]);
+    //var $accs = shuffle([1, 1, .5, .5]);
 
     //make array of 4 platoons
-    var $plts = [
-        new Plt("#sq90","plt1.png","plt1",$accs[0]),
-        new Plt("#sq91","plt2.png","plt2",$accs[1]),
-        new Plt("#sq104","plt3.png","plt3",$accs[2]),
-        new Plt("#sq105","plt4.png","plt4",$accs[3])
+    $plts = [
+        new Plt("#sq90","plt1.png","plt1"),
+        new Plt("#sq91","plt2.png","plt2"),
+        new Plt("#sq104","plt3.png","plt3"),
+        new Plt("#sq105","plt4.png","plt4")
     ];
 
     console.log($plts);
@@ -66,10 +65,10 @@ $(document).ready(function(){
         this.loc = loc;
         this.startTime = startTime;
         this.status = "inactive";
+        this.type = "unknown";
     }
     
     //make array of xx targets
-    var $hvts = [];
     for (i=0; i<$nHvts; i++){
         var $temploc = Math.floor(Math.random() * 196);
         var $excluded = [75,76,77,78,89,90,91,92,103,104,105,106,117,118,119,120];
@@ -77,7 +76,7 @@ $(document).ready(function(){
         while ($excluded.indexOf($temploc) != -1){
             $temploc = Math.floor(Math.random() * 196);
         }
-        var $temptime = i*hvtInterval + 5;
+        var $temptime = i*hvtInterval + $startTime;
         $hvts[i] = new target($temploc,$temptime);
     }
 
@@ -260,7 +259,7 @@ $(document).ready(function(){
             if ($elapsedTime == $hvts[i].startTime){
                 $hvts[i].status = "active";
                 
-                //go through ***4*** intel boxes (need to change this to 2)
+                //go through 2 intel boxes
                 for (j=0; j<2; j++){
                     
                     var $reportedSq = getCoords($hvts[i].loc + 1)               
@@ -339,14 +338,26 @@ $(document).ready(function(){
                                     
 
                     
-                    $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>').click(function() {
-                        $(this).find('button').hide();
-                        $(this).find('span').fadeIn('fast');
-                        $('.intelTBs #info' + i).not(this).find('button').prop('disabled', true);
+                    $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>');
+                    $('#intel' + (j+1) + ' #info' + i).on('click', 'button', function() {
+                        
                         //which hvt line is this?
-                        $temphvt = $(this).attr('id').substr(4);
-                        $('.intelTBs #info' + $temphvt).not(this).find('button').prop('disabled', true);
-                        $('.intelTBs #info' + $temphvt).not(this).css('color', 'lightgray');
+                        $temphvt = $(this).parent().attr('id').substr(4);
+                        
+                        //show location info, disable button in other intel box
+                        $('.intelTBs #info' + $temphvt).find('button').prop('disabled', true);
+                        $(this).hide();
+                        $(this).parent().find('span').fadeIn('fast');            
+                        
+                        $('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', 'lightgray');
+                        
+                        //depending on which source was clicked, assign whether hvt type is low or high value
+                        var $tempintel = $(this).parent().parent().attr("id").substr(5)-1;
+                        if ($intels[$tempintel].risk == "low"){
+                            $hvts[$temphvt].type = "low";
+                        } else {
+                            $hvts[$temphvt].type = "high";
+                        }
                     });
                     
                 }
@@ -401,7 +412,19 @@ function getSq($coords) {
 
 function timer($elapsedTime) {
     $elapsedTime++
-    $('#time').html($elapsedTime);
+    var $elapsedMinutes = Math.floor($elapsedTime/60);
+    var $elapsedSeconds = $elapsedTime % 60;
+    var $displayTime = ""
+    if ($elapsedSeconds < 10){
+            $displayTime = $elapsedMinutes + ":0" + $elapsedSeconds
+        } else {
+            $displayTime = $elapsedMinutes + ":" + $elapsedSeconds;
+    }
+    if ($elapsedMinutes < 10){
+        $displayTime = "0" + $displayTime
+    }
+    
+    $('#time').html($displayTime);
     return $elapsedTime;
 }
 
