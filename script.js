@@ -220,21 +220,33 @@ $(document).ready(function(){
                 for (j=0; j<$nHvts; j++) {
                     if ($hvts[j].status == "active") {             
                         if (getSq($plts[i].currentRow+$plts[i].currentCol) == $hvts[j].loc){  
-                            //capture or false alarm
-                            //look at accuracy of current platoon
+                            //capture or false alarm                        
+                            //current hvt is "j"
+                            
                             var $capture = -1;
-                            if ($plts[i].accuracy == 1) { //capture
+                            
+                            if ($hvts[j].type == "low") {
+                                //make capture 100%
                                 $capture = 1;
-                            }
-                            else if ($plts[i].accuracy == .5) {//random
+                            } else if ($hvts[j].type == "high") {
+                                //make false alarm 50% likely, then hvt goes away
                                 $capture = Math.floor(Math.random() * 2);
+                                console.log($capture);  
+                            } else {
+                                //shouldn't be eligible to be captured
                             }
+
                             if ($capture > 0) {
                                 $hvts[j].status = "captured";
                                 $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " captured";
-                                $plts[i].points = $hvtPoints;
+                                if ($hvts[j].type == "low") {
+                                    $plts[i].points = $lvtPoints;
+                                } else if ($hvts[j].type == "high") {
+                                    $plts[i].points = $hvtPoints;
+                                }
                             }
                             else {
+                                $hvts[j].status = "lost";
                                 $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " false alarm";
                             }
                             if ($plts[i].status == "moving") {
@@ -257,7 +269,7 @@ $(document).ready(function(){
         //activate targets, add intel notifications
         for (i=0; i<$nHvts; i++){
             if ($elapsedTime == $hvts[i].startTime){
-                $hvts[i].status = "active";
+                //$hvts[i].status = "active";
                 
                 //go through 2 intel boxes
                 for (j=0; j<2; j++){
@@ -324,25 +336,20 @@ $(document).ready(function(){
                     
                     var $risk = $srcRisk[j];
                     
-                    //for now, just change what each source says (LVT/HVT)
-                    //will need to add a list of low value targets later
                     
                     if ($risk == "high"){
-                                            $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
+                        $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
                     } else {
-                        
-                          $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">LVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
-                    }
-                    
-                    
-                                    
-
+                        $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">LVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
+                    }                         
                     
                     $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>');
                     $('#intel' + (j+1) + ' #info' + i).on('click', 'button', function() {
                         
                         //which hvt line is this?
-                        $temphvt = $(this).parent().attr('id').substr(4);
+                        var $temphvt = $(this).parent().attr('id').substr(4);
+                        $hvts[$temphvt].status = "active";
+                        console.log($temphvt);
                         
                         //show location info, disable button in other intel box
                         $('.intelTBs #info' + $temphvt).find('button').prop('disabled', true);
