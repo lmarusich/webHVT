@@ -108,32 +108,35 @@ $(document).ready(function(){
     //add checkboxes
     for (i=0; i<$nHvts; i++){
        // $('#cbPanel ul').append('<li><input type="checkbox" name="hvtCB">HVT' + (i+1) + '</li>');
-
-        $('#cbPanel ul').append('<li><span>&#10004</span><button class="hvtCB">Target ' + (i + 1) + '&nbsp&#9660</button><div class = "dropdowncontent"><a href = "#" class = "p-active disabled">Active</a><a href = "#" class = "p-captured">Captured</a><a href = "#" class = "p-missed">Missed</a></div></li>'); 
+       // $('#cbPanel ul').append('<li><button name="hvtCB">Target ' + (i+1) + '  &#9660</button></li>');
+        //$('#cbPanel ul').append('<li><span>&nbsp&nbsp</span>Target ' + (i + 1) + ' <button class="hvtCB">&#9660</button><div class = "ddcontainer"><div class = "dropdowncontent"><p class = "p-active">Active</p><p class = "p-captured">Captured</p><p class = "p-missed">Missed</p></div></div></li>');
+        
+        $('#cbPanel ul').append('<li><span>&nbsp&nbsp</span>Target ' + (i + 1) + ' <select><option value = "active">Active</option><option value = "captured">Captured</option><option value = "missed">Missed</option></select></li>');
+        
+    
+        
 
     }
     
     $('#cbPanel button').on('click',function() {
-        $(this).parent().find('.dropdowncontent').toggleClass('show');
+        //$(this).parent().children('.dropdowncontent').toggleClass('show');
+        //$(this).parent().find('.dropdowncontent').toggleClass('show');
+        var $whichtarg = $(this).parent().attr('id').substr(2);
+        $('#dd' + $whichtarg).toggleClass('show');
+        $('#dd' + $whichtarg).offset().top = $(this).position().top;
     });
     
     //change appearance when a dropdown item is selected
-    $('#cbPanel a').on('click', function() {
+    $('#cbPanel p').on('click', function() {
         //if clicked on "captured" add a checkbox
         if ($(this).hasClass('p-captured')){
             $(this).parent().parent().children('span').html('&#10004');
-            $(this).parent().parent().children('span').addClass('show');
-            $(this).parent().parent().children('span').css('color', '#009900');
+            $(this).parent().parent().children('span').css('color', '#33cc33');
         } else if ($(this).hasClass('p-active')){
-            $(this).parent().parent().children('span').removeClass('show');
+            $(this).parent().parent().children('span').html('&nbsp&nbsp');
         } else if ($(this).hasClass('p-missed')){
             $(this).parent().parent().children('span').html('&#10008');
-            $(this).parent().parent().children('span').addClass('show');
-            $(this).parent().parent().children('span').css('color', 'red');
         }
-        
-        $('#cbPanel a').removeClass('disabled');
-        $(this).addClass('disabled');
         //if clicked on "missed" add an x
         //if clicked on "active" remove all that
     });
@@ -142,10 +145,8 @@ $(document).ready(function(){
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
-    
-    
   if (!event.target.matches('.hvtCB')) {
-    var dropdowns = document.getElementsByClassName("dropdowncontent show");
+    var dropdowns = document.getElementsByClassName("dropdowncontent");
     var i;
     for (i = 0; i < dropdowns.length; i++) {
       var openDropdown = dropdowns[i];

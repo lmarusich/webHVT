@@ -10,7 +10,7 @@ header {
 .headerPanel {
     height: 100px;
     float: left;
-    background-color: #ccc;
+    background-color: #ddd;
     margin-right: 10px;
     border: 3px black solid;
 }
@@ -61,8 +61,8 @@ header {
     background: rgba(0, 0, 255,.2);
 }
 
-#status #status1.base,#status3.base,#status1.stopped,#status3.stopped {
-    background-color: #ddd;
+#status #status2.base,#status4.base,#status2.stopped,#status4.stopped {
+    background-color: #ccc;
 }
 #status #status1.moving,#status3.moving {
     background: rgba(255, 255, 128,.3);
@@ -120,20 +120,73 @@ header {
 /*CHECKBOX PANEL*/
 #cbPanel {
     position: absolute;
-    font-size: .72em;    
+    font-size: .80em;    
     margin-left: 10px;
+    padding: 0;
 }
 #cbPanel ul {
     width: 100%;
     padding: 0;
-    margin: 0;
-    column-count: 4;
-    -webkit-column-count: 4;
-    padding: 0 5px 5px 0;
+    margin: 5px;
     list-style-type: none;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-auto-flow: column;
 }
 #cbPanel li {
-    margin: 2px 0 2px 0;
+    margin: 0 0 4px 0;
+    line-height: 1.25;
+}
+
+#cbPanel li span {
+    visibility: hidden;
+}
+
+#cbPanel li span.show {
+    visibility: visible;
+}
+
+#cbPanel button {
+    font-size: 1em;    
+    padding: 2px 2px;
+    border: none;
+    background-color: #ddd;
+    outline: none;
+}
+
+#cbPanel button:hover {
+    background-color: #ccc;
+}
+
+.dropdowncontent {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 72px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;    
+}
+
+.dropdowncontent a {
+  color: black;
+  margin: 0;
+  padding: 2px 2px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdowncontent.show {
+    display:block;
+}
+
+.dropdowncontent a:hover {
+    background-color: #ddd;
+}
+
+.dropdowncontent a.disabled {
+    background-color: #f1f1f1;
+    color: gray;
+    cursor: default;
 }
 
 #cbPanel li.checked {
@@ -143,6 +196,7 @@ header {
 #cbPanel input:focus {
     outline: 0;
 }
+/*CHECKBOX PANEL*/
 
 #colNames {
     height: 20px;
