@@ -132,7 +132,7 @@ $(document).ready(function(){
             $(this).parent().parent().children('span').css('color', 'red');
         }
         
-        $('#cbPanel a').removeClass('disabled');
+        $(this).parent().children('a').removeClass('disabled');
         $(this).addClass('disabled');
         //if clicked on "missed" add an x
         //if clicked on "active" remove all that
