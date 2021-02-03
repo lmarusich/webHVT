@@ -73,7 +73,10 @@ $(document).ready(function(){
         $('#scorePanel strong').html($score + "/" + $maxScore);
         $('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
         
+        
+        document.getElementById("frameoptions").style.display = "none";
         document.getElementById("overlay").style.display = "none";
+        document.getElementById("resume").style.display = "inline";
     });
     
     
@@ -362,10 +365,12 @@ window.onclick = function(event) {
                             //current hvt is "j"
                             
                             var $capture = -1;
+                            var $hvtType = "HVT ";
                             
                             if ($hvts[j].type == "low") {
                                 //make capture 100%
                                 $capture = 1;
+                                $hvtType = "LVT "
                             } else if ($hvts[j].type == "high") {
                                 //make false alarm 50% likely, then hvt goes away
                                 $capture = Math.floor(Math.random() * 2);
@@ -377,14 +382,16 @@ window.onclick = function(event) {
                             if ($capture > 0) {
                                 $hvts[j].status = "captured";
                                 
+                                
                                 if ($hvts[j].type == "low") {
                                     $plts[i].points = $lvtPoints;
+                                    
                                 } else if ($hvts[j].type == "high") {
                                     if ($frame == "+"){
                                         $plts[i].points = $hvtPoints;
                                     }
                                 }
-                                $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " captured (" + $frame + $plts[i].points + ")";
+                                $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
                                 var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
                                 data2 += "," + JSON.stringify(tempdataobj);    
                             }
@@ -395,7 +402,7 @@ window.onclick = function(event) {
                                         $plts[i].points = $hvtPoints;
                                     }
                                 }
-                                $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
+                                $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
                                 var tempdataobj = {time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j};
                                 data2 += "," + JSON.stringify(tempdataobj); 
                             }

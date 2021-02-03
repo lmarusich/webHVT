@@ -34,6 +34,7 @@ header {
     display:none;
 }
 
+/*
 #resume:hover{
   position: absolute;
   top: 50%;
@@ -44,6 +45,7 @@ header {
   -ms-transform: translate(-50%,-50%);
     cursor: pointer;
 }
+*/
 
 .headerPanel {
     height: 100px;
