@@ -20,6 +20,10 @@
                 00:00
             </div>
             
+            <div id="pause" class="headerPanel">
+                <button>Pause</button>
+            </div>
+            
             <div id="status" class="headerPanel">
                 <div id="status1" class="base">
                     <p>Platoon 1: At Base</p>
@@ -50,6 +54,23 @@
                 <ul></ul>
             </div>
         </header>
+        
+         <div id="overlay">
+            <div id = "frameoptions">
+                
+                <input type="radio" id="gains" name="framing" value="gains" checked required>  
+                <label for="gains">Gains</label><br>
+                <input type="radio" id="losses" name="framing" value="losses">
+                <label for="losses">Losses</label><br>
+                
+                    <button id = "framingbutton">Submit</button> 
+              
+                
+            </div>
+             <div id = "resume">
+              <button id="resumebutton">Resume</button>
+             </div>
+        </div> 
         
         <div id="colNames"></div>
         <div id="rowNames"></div>

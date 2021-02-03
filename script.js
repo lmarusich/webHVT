@@ -6,7 +6,8 @@
 
 
 //test variables
-var $nHvts = 1;
+var $frame = "+";
+var $nHvts = 5;
 var $startTime = 5;
 var hvtInterval = 5;
 var $elapsedTime = 0;
@@ -23,6 +24,7 @@ var $hvts = [];
 var $intels = [];
 var $plts = [];
 var $targetsdone = 0;
+var $isPaused = false;
 //data0 = condition (time pressure, gains/losses, etc.)
 data2 = "{events:[}";
 
@@ -56,6 +58,42 @@ $(document).ready(function(){
     //Move on to tutorial2
     //This one will depend on condition, needs to explain different sources, spot reports, and scoring
    
+    //define options button
+    $('#framingbutton').on('click',function() {
+        //var nameValue = document.getElementById("uniqueID").value;
+        //add a data event here that the game was resumed
+        if(document.getElementById("gains").checked){
+            $frame = "+";
+        } else {
+            $frame = "-";
+            $score = $maxScore;
+        }
+        
+        //reset progress bar text and height
+        $('#scorePanel strong').html($score + "/" + $maxScore);
+        $('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
+        
+        document.getElementById("overlay").style.display = "none";
+    });
+    
+    
+    
+    
+    //define pause button
+    $('#pause button').on('click',function() {
+        $isPaused = true;
+        //add a data event here that the game was paused
+        document.getElementById("overlay").style.display = "block";
+    });
+    
+    //define resume button
+    $('#resume').on('click',function() {
+        $isPaused = false;
+        //add a data event here that the game was resumed
+        document.getElementById("overlay").style.display = "none";
+    });
+    
+
     
     //make array of 2 intel groups
     for (i=0; i<2; i++){
@@ -269,6 +307,7 @@ window.onclick = function(event) {
 
     
     mytimer = setInterval(function() {
+        if ($isPaused == false){
         $elapsedTime = timer($elapsedTime);
         //check if any platoons are moving
         for (i=0; i<$plts.length; i++) {
@@ -337,19 +376,26 @@ window.onclick = function(event) {
 
                             if ($capture > 0) {
                                 $hvts[j].status = "captured";
-                                $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " captured";
+                                
                                 if ($hvts[j].type == "low") {
                                     $plts[i].points = $lvtPoints;
                                 } else if ($hvts[j].type == "high") {
-                                    $plts[i].points = $hvtPoints;
+                                    if ($frame == "+"){
+                                        $plts[i].points = $hvtPoints;
+                                    }
                                 }
-                                
+                                $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " captured (" + $frame + $plts[i].points + ")";
                                 var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
                                 data2 += "," + JSON.stringify(tempdataobj);    
                             }
                             else {
                                 $hvts[j].status = "lost";
-                                $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " false alarm";
+                                if ($hvts[j].type == "high"){
+                                    if ($frame == "-"){
+                                        $plts[i].points = $hvtPoints;
+                                    }
+                                }
+                                $plts[i].msg = "Unit " + (i+1) + ": HVT " + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
                                 var tempdataobj = {time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j};
                                 data2 += "," + JSON.stringify(tempdataobj); 
                             }
@@ -475,7 +521,8 @@ window.onclick = function(event) {
                     
                 }
             }
-        }      
+        } 
+        }
     }, 1000);
 });
 
@@ -632,9 +679,18 @@ function stopPlt($plts,$index,$score,$maxScore) {
         
         if ($plts[$index].points > 0) {
             //update score progress bar
-            $score = $score + $plts[$index].points;
-            $('#scorePanel strong').html($score + "/30");
-            $('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
+            if ($frame == "+"){
+                $score = $score + $plts[$index].points;
+            } else {
+                $score = $score - $plts[$index].points;
+            }
+            
+            $('#scorePanel').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+            $('#scorePanel strong').html($score + "/" + $maxScore);
+            //$('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
+            $('#scorePanel #prog').animate({
+                height: ($score/$maxScore*100)+'%'
+            },'slow');
             $plts[$index].points = 0;
             
             if ($score == $maxScore) {

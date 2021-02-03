@@ -7,6 +7,44 @@ header {
     height: 120px;
 }
 
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: block; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.95); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+}
+
+#overlay>div{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 25px;
+  background-color: white;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+}
+
+#resume{
+    display:none;
+}
+
+#resume:hover{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 25px;
+  background-color: #ddd;
+  transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+    cursor: pointer;
+}
+
 .headerPanel {
     height: 100px;
     float: left;
@@ -42,9 +80,19 @@ header {
     top: 85px;
     height: 20px;
     width: 50px;
-    border: 3px solid black;
     padding: 2px;
     text-align: center;
+}
+
+#pause {
+    position: absolute;
+    margin-left: 110px;
+    top: 85px;
+    height: 20px;
+    padding: 2px;
+    text-align: center;
+    border: 0;
+    background-color: transparent;
 }
 
 /*STATUS OF EACH PLATOON PANEL*/
