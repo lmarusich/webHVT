@@ -70,7 +70,7 @@ $(document).ready(function(){
         }
         
         //reset progress bar text and height
-        $('#scorePanel strong').html($score + "/" + $maxScore);
+        $('#scorePanel h3').html("Score: " + $score + "/" + $maxScore);
         $('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
         
         
@@ -80,10 +80,10 @@ $(document).ready(function(){
     });
     
     
-    
+    $('#time').css('width',$('#assignUnit').css('width'));
     
     //define pause button
-    $('#pause button').on('click',function() {
+    $('#pause').on('click',function() {
         $isPaused = true;
         //add a data event here that the game was paused
         document.getElementById("overlay").style.display = "block";
@@ -548,17 +548,22 @@ function changeHeight() {
     $('#rowNames>div').css('height',Math.floor($totalWidth/14));
     $('#rowNames span').css('top',parseInt($('#rowNames div').css('height'))/2 - parseInt($('#rowNames span').css('height'))/2);  
     $('#colNames>div').css('width',Math.floor($totalWidth/14));
+    
 
     var $mapRight2 = $('#mapPanel').position().left + $totalWidth;
     var $mapBottom = $('#mapPanel').position().top + $totalWidth;
-    $('#scorePanel').css('left',$mapRight2 - parseInt($('#scorePanel').css('width')) - 6);
+    $('#scorePanel2').css('left',$mapRight2 - parseInt($('#scorePanel2').css('width')) - 6);
     $('#cbPanel').css('left',$('#intelPanel').position().left);
     $('#cbPanel').css('width',$('#intelPanel').css('width'));
     $('#assignUnit').css('margin-left',$('#mapPanel').position().left-7);
     $('#capturePanel').css('height',$totalWidth/3 * 1.25);
-    $('#capturePanel').css('width',$('#intelPanel').css('width'));
+    $('#capturePanel').css('width',(parseInt($('#intelPanel').css('width'))+6)/2 - 6 - 2);
     $('#capturePanel').css('top',$mapBottom - parseInt($('#capturePanel').css('height')));
     $('#capturePanel').css('left',$('#intelPanel').position().left);
+    $('#scorePanel').css('top',$('#capturePanel').css('top'));
+    $('#scorePanel').css('width',$('#capturePanel').css('width'));
+    $('#scorePanel').css('height',$('#capturePanel').css('height'));
+    $('#scorePanel').css('left',parseInt($('#capturePanel').css('left'))+parseInt($('#capturePanel').css('width')) + 6 + 4);
 }
 
 function getCoords(sqNum) {
@@ -591,7 +596,7 @@ function timer($elapsedTime) {
         $displayTime = "0" + $displayTime
     }
     
-    $('#time').html($displayTime);
+    $('#time span').html($displayTime);
     return $elapsedTime;
 }
 
@@ -692,12 +697,14 @@ function stopPlt($plts,$index,$score,$maxScore) {
                 $score = $score - $plts[$index].points;
             }
             
-            $('#scorePanel').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
-            $('#scorePanel strong').html($score + "/" + $maxScore);
+            $('#progShell').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100, function() {
+                $('#scorePanel h3').html("Score: " + $score + "/" + $maxScore);
             //$('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
             $('#scorePanel #prog').animate({
                 height: ($score/$maxScore*100)+'%'
             },'slow');
+            });
+            
             $plts[$index].points = 0;
             
             if ($score == $maxScore) {

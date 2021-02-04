@@ -34,19 +34,6 @@ header {
     display:none;
 }
 
-/*
-#resume:hover{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  padding: 25px;
-  background-color: #ddd;
-  transform: translate(-50%,-50%);
-  -ms-transform: translate(-50%,-50%);
-    cursor: pointer;
-}
-*/
-
 .headerPanel {
     height: 100px;
     float: left;
@@ -79,22 +66,14 @@ header {
 #time {
     position: absolute;
     margin-left: 27px;
-    top: 85px;
-    height: 20px;
-    width: 50px;
-    padding: 2px;
+    top: 79px;
+    height: 25px;
+    padding: 2px 5px;
     text-align: center;
 }
 
 #pause {
-    position: absolute;
-    margin-left: 110px;
-    top: 85px;
-    height: 20px;
-    padding: 2px;
-    text-align: center;
-    border: 0;
-    background-color: transparent;
+    margin: 2px 0 0 25px;
 }
 
 /*STATUS OF EACH PLATOON PANEL*/
@@ -143,12 +122,13 @@ header {
 }
 
 /*SCORE PANEL*/
-#scorePanel {
+#scorePanel2 {
+    display: none;
     padding: 0 3px 0 3px;
     position: absolute;
     width: 100px;
 }
-#progShell {
+#progShell2 {
     margin: auto;
     height: 75%;
     width: 20px;
@@ -157,7 +137,7 @@ header {
     border: 1px solid black;
 }
 
-#prog {
+#prog2 {
     background-color: #ffff80;
     width: 100%;
     height: 0;
@@ -423,10 +403,14 @@ header {
     float: left;
     background-color: #ccc;
     width: 40%;
-    min-width: 356px;
+    
     margin-left: 10px;
     border: 3px black solid; 
     overflow: hidden;
+}
+
+#intelPanel {
+    min-width: 360px;
 }
 
 #intelHeading {
@@ -514,6 +498,27 @@ h4 {
     font-size: .75em;
 }
 
+#scorePanel {
+    position: absolute;
+}
 
+#progShell {
+    margin:auto;
+    margin-top: 5px;
+    height: 85%;
+    width: 50px;
+    background-color: white;
+    position: relative;
+    border: 1px solid black;
+}
+
+#prog {
+    background-color: #ffff80;
+    width: 100%;
+    height: 0;
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid black;
+}
 
 
