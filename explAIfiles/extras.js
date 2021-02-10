@@ -1,0 +1,32 @@
+var consent = 
+    "<div class = 'parent'><p><strong>Please read the consent form carefully</strong></p><p>We invite you to participate in a web-based online experiment on decision-making. The experiment should take no more than <span style='color:#ff0000; font-weight:bold;'>30</span> minutes to complete.</p><p><strong>You must be at least 18 years old to participate in these experiments.</p><p>The decision to participate in this research project is voluntary.</strong> You do not have to participate and you can refuse to answer any question. Even if you begin the web-based experiments, you can stop at any time by closing your browser.</p><p><strong>There are no foreseeable risks or discomforts to you for taking part in this study.</strong> We anticipate that it will take you at most  <span style='color:#ff0000; font-weight:bold;'>30</span> minutes to complete this task. However, you will only be rewarded for completing the task not for the length of time you participate.</p><p><strong>You will be compensated for good faith participation in this experiment. Submitted HITs will be rejected if they are completed in a manner that appears to be random, incomplete, or otherwise negligent.</p><p>Your data will be handled in a confidential manner.</strong> The data you provide will be stored in a secure database and your responses will not be linked to your Turk worker ID. Your worker ID will only be used for payment. Non-identified data may be publically shared on the Open Science Framework or a similar platform. The purposes of data sharing are to document the results reported in a paper and secondary analysis of the data by others.</p><p><strong>If you have any questions about this study, please contact:</strong> Laura Marusich-Cooper, laura.m.cooper20.civ@mail.mil</p><p><strong>This study has been reviewed and approved by Army Research Laboratory (ARL). ARL&#39;s Human Research Protection Program/Institutional Review Board shall have access to records for auditing and checking compliance with regulations.</p><p>By clicking below you are indicating that you consent to participate in the experiment on Volunteer Science.</p></div> ";
+
+
+var compas_instructions = [
+    "<p>Welcome!</p><p>In this task, you will be given information about different people who were charged with a crime.</p><p>Based on this information, you will decide whether each person committed another crime within the next 2 years.</p>",
+
+    "<div class = 'parent'><p>Here is a list of the information you will see about each person.</p><ul><li><strong>Age</strong> - Given in years</li><li><strong>Charge degree</strong> - Whether the person's current charge is a felony (more serious) or a misdemeanor (less serious)</li><li><strong>Race</strong> - African-American, Asian, Caucasian, Hispanic, or Other</li><li><strong>Risk score</strong> - Risk of committing another crime in the future (high, medium, or low)</li><li><strong>Sex</strong> - Male or Female</li><li><strong>Number of priors</strong> - the total number of criminal convictions the person has previously received, including both felonies and misdemeanors</li></ul><p>Click 'Next' to see an example</p></div>",
+
+    "<p>Choose whether or not you think this person will commit another crime within 2 years."
+    ];
+
+var census_instructions = [
+    "<p>Welcome!</p><p>In this task, you will be given information about different people living and working in the United States.</p><p>Based on this information, you will decide whether each person earns more or less than $88,000 in yearly income.</p>",
+
+    "<div class = 'parent'><p>Here is a list of the information you will see about each person.</p><ul><li><strong>Age</strong> - Given in years</li><li><strong>Workclass</strong> - The type of employer the person works for (e.g. federal government, private industry, etc.) </li><li><strong>Education</strong> - The highest level of education the person completed</li><li><strong>Marital Status</strong> - Never married, married, separated, widowed</li><li><strong>Occupation</strong> - Type of job (e.g. blue-collar, sales, etc.)</li><li><strong>Relationship</strong> - Relationship the subject has with the person who owns or rents their living accommodations</li><li><strong>Race</strong> - Self-identified race</li><li><strong>Sex</strong> - Male or Female</li><li><strong>Capital gain</strong> - Taxable gain the person made from investments</li><li><strong>Capital loss</strong> - Tax deductible loss the person made from investments</li><li><strong>Hours per week</strong> - The number of hours worked per week</li><li><strong>Country</strong> - The subject's country of birth</li></ul><p>Click 'Next' to see an example</p></div>",
+
+    "<p>Choose whether you think this person earns more or less than $88,000 in yearly income."
+    ];
+
+
+var ai_instructions = "<p>You will also be shown the prediction made by an an artificial intelligence (AI) classifier<br> that has been trained on the full dataset of people.</p><p>You may use this prediction to aid your decision if you choose.</p>"
+
+var aiexpl_instructions = "<p>In addition, you will see what rule the AI used to make its prediction.</p><p>You may use this information to decide whether or not you agree with the AI prediction</p>"
+
+var prac_instructions = "Great! You will now begin with 10 practice trials. Press 'Next' to start the practice."
+
+var instructions6 = "You have completed the practice trials. Now you will complete 50 test trials. Please work as quickly as you can without making mistakes. Press any key to begin."
+
+
+var debrief = 
+    "<div class = 'parent'><p><strong>Thank you for participating in the experiment!</strong></p><p>We are investigating if artificial intelligence (AI) can be used as an aid to improve human decision making. This experiment had three different conditions:<ol><li>Control condition: No AI prediction</li><li>AI prediction (decision aid)</li><li>AI prediction with an explanation</li></ol></p><p>Previous research has found mixed results: sometimes people make better decisions with aids, sometimes the aids result in worse decisions. </p><p>Reference: <a href = 'https://pdfs.semanticscholar.org/8580/dc7ba0f0d7eb1c2495ceb23af9491a805849.pdf'>Does automation bias decision-making?</a> </p><p><strong>If you have any questions about this study, please contact:</strong> Laura Marusich-Cooper, laura.m.cooper20.civ@mail.mil</p></div>";

@@ -30,6 +30,19 @@ header {
   -ms-transform: translate(-50%,-50%);
 }
 
+.divoverlay {
+    background-color: rgba(0,0,0,0.95);
+    position: fixed;
+    width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+    
+}
+
 #resume{
     display:none;
 }
@@ -230,6 +243,7 @@ header {
 
 #colNames {
     height: 20px;
+    
     border-left: 3px white solid;
     margin-left: 26px;
 }
@@ -259,6 +273,10 @@ header {
     left: 0;
     width: 100%;
     text-align: right;
+}
+
+#mapcontainer {
+    float: left;
 }
 
 #mapPanel {
@@ -410,7 +428,9 @@ header {
 }
 
 #intelPanel {
+    
     min-width: 360px;
+    margin-top: 20px;
 }
 
 #intelHeading {
@@ -521,4 +541,7 @@ h4 {
     border-top: 1px solid black;
 }
 
+.introjs-skipbutton {
+    visibility: hidden;
+}
 
