@@ -243,12 +243,18 @@ function addArrow($nSteps,$refSq,$whichPlt,$stepSize,$whichLeg,$status) {
 }
 
 function changeHeight() {
-    if (!$tutorialRunning){
+    
     
     //var $totalWidth = parseInt($('#mapPanel').css('width'));
 
     var $totalWidth2 = window.innerWidth;
-    $totalWidth = $totalWidth2/2;
+        var $mapheight = window.innerHeight - 140;
+    
+        //make sure the display isn't too tall for the window size
+        $totalWidth = $totalWidth2/2;
+        if ($totalWidth > $mapheight){
+            $totalWidth = $mapheight - 5;
+        }
     $('#mapPanel').css('width',Math.floor($totalWidth/14)*14);
     $totalWidth = parseInt($('#mapPanel').css('width'));
     $('#mapPanel').css('height',$totalWidth);
@@ -273,7 +279,14 @@ function changeHeight() {
     $('#scorePanel').css('width',$('#capturePanel').css('width'));
     $('#scorePanel').css('height',$('#capturePanel').css('height'));
     $('#scorePanel').css('left',parseInt($('#capturePanel').css('left'))+parseInt($('#capturePanel').css('width')) + 6 + 4);
-    }
+    
+    //position the hidden tutorial div for the map
+    $('#littleoverlay').css('top', $('#sq59').offset().top);
+    $('#littleoverlay').css('left', $('#sq59').offset().left);
+    $('#littleoverlay').css('width', parseInt($('.mapSquare').css('width')) * 3 + 4);
+    $('#littleoverlay').css('height', parseInt($('.mapSquare').css('width')) * 3 + 4);
+                            
+    
 }
 
 function getCoords(sqNum) {

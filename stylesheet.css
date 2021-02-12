@@ -7,6 +7,13 @@ header {
     height: 120px;
 }
 
+#littleoverlay {
+  position: absolute; /* Sit on top of the page content */
+  display: block; /* Hidden by default */
+    
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+}
+
 #overlay {
   position: fixed; /* Sit on top of the page content */
   display: block; /* Hidden by default */
@@ -303,6 +310,16 @@ header {
     opacity: 0.5;
 }
 
+.mapSquare.tutorial1 {
+    background-color: yellow;
+    opacity: 0.85;
+}
+
+.mapSquare.tutorial2 {
+    background-color: yellow;
+    opacity: 0.4;
+}
+
 .mapSquare.clicked {
     background-color: transparent;
     opacity: 1;
@@ -544,4 +561,11 @@ h4 {
 .introjs-skipbutton {
     visibility: hidden;
 }
+
+#tutorialintel {
+    visibility: hidden;
+    
+}
+
+
 

@@ -24,7 +24,8 @@ var $intels = [];
 var $plts = [];
 var $targetsdone = 0;
 var $isPaused = false;
-var $tutorialRunning = false;
+var letter = 'A'.charCodeAt(0);
+
 //data0 = condition (time pressure, gains/losses, etc.)
 data2 = "{events:[}";
 
@@ -60,7 +61,7 @@ $(document).ready(function(){
     $('#time').css('width',$('#assignUnit').css('width'));
     
     //add row and column names to map panel
-    var letter = 'A'.charCodeAt(0); 
+     
     for (i=0; i<14; i++) {
         $("#rowNames").append('<div><span>'+String.fromCharCode(letter+i)+'</span></div>');
         $("#colNames").append('<div>' + (i+1) + '</div>');
@@ -219,54 +220,7 @@ $(document).ready(function(){
     
     //startTutorial;
     //don't show timer
-    function startTutorial() {
-//        $tutorialRunning = true;
-        document.getElementById("time").style.display = "none";
-        //introJs().start();
-        //introJs().start(".panel");
-        var myintro = introJs();
-        myintro.onafterchange(function(targetElement) {
-  //console.log(targetElement.id);
-            if(targetElement.id == "scorePanel"){
-                console.log("can i force an action here");
-                myintro.previousStep();
-            }
-}).setOptions({
-          steps: [{
-            title: 'Welcome!',
-            intro: 'Your task is to find and capture targets that have been spotted in the area.'
-          },
-          {
-            element: document.querySelector('#mapcontainer'),
-            intro: 'This is the map'
-          },
-                            {
-            element: document.querySelector('#intelPanel'),
-            intro: 'This is where you get intel...'
-          },
-        {
-            element: document.querySelector('#sq90'),
-            intro: 'This is one of four units...'
-          },
-                  {
-                              element: document.querySelector('#capturePanel'),
-            intro: 'Here is where you see if you captured a target, or if it was a false alarm...'
-          },
-                   {
-                              element: document.querySelector('#cbPanel'),
-            intro: 'Stay organized! Mark whether you captured or missed each target...'
-          },
-                                     {
-                              element: document.querySelector('#scorePanel'),
-            intro: 'Your total score will appear here'
-          },
-          {
-            title: 'Farewell!',
-            element: document.querySelector('.card__image'),
-            intro: 'And this is our final step!'
-          }]
-        }).start();
-    }
+    
     
     //$("#intelPanel").toggleClass('divoverlay');
     //tutorialtimer();
