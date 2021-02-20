@@ -29,12 +29,63 @@
 //}
 
 
+//reset everything for each practice and test run
+function resetAll($frame, ntargets){
+    
+    //hvts
+    
+    $elapsedTime = 0;
+    $('.mapSquare').removeClass('tutorial1 tutorial2 clickadded');
+    
+    //make array of 4 platoons
+    $plts = [
+        new Plt("#sq90","plt1.png","plt1"),
+        new Plt("#sq91","plt2.png","plt2"),
+        new Plt("#sq104","plt3.png","plt3"),
+        new Plt("#sq105","plt4.png","plt4")
+    ];
+    
+    //empty out hvt array
+    $hvts = []
+    
+    //add platoons to base location
+    for (i=0; i<$plts.length; i++) {
+        $($plts[i].homeSq).append($('#plt' + (i+1)).removeClass('hidden'));
+        
+        $('#status' + (i+1) + ' p').html('Platoon ' + (i+1) + ': At Base');
+        $('#status' + (i+1) + ' p').parent().removeClass().addClass('base');
+    }
+    
+    if ($frame == "+"){
+        $score = 0;
+    } else {
+        $score = $maxScore;
+    }
+    //reset progress bar text and height
+    $maxScore = ntargets * 2;
+    $('#scorePanel h3').html("Score: " + $score + "/" + $maxScore);
+    $('#scorePanel #prog').css('height',($score/$maxScore*100)+'%');
+    
+    //remove text from textboxes
+    $('#captureTB').empty();
+    $('#intel1>p').remove();
+    
+    //uncheck any checkboxes
+    $('li>span').removeClass('show');
+    $('.dropdowncontent').children().removeClass('disabled');
+    $('.p-active').addClass('disabled');
+    
+    $('#littleoverlay').remove();
+    
+    
+}
+
 
 
 //define intel object
-function Intel(id,acc,risk) {
+function Intel(id,accs,risk) {
     this.id = id;
-    this.acc = acc;
+    this.acc = accs;
     this.risk = risk;
 }
 
@@ -110,26 +161,28 @@ function startPlt($plts,$index) {
     addArrows($index+1,$goal,$curr,$plts[$index].xfirst,$plts[$index].status);          
 }
 
-function stopPlt($plts,$index,$score,$maxScore) {
+function stopPlt(platoon,$score,$maxScore,ntargets) {
+    
+    var $index = $plts.indexOf(platoon);
 
-    var $currSq = getSq($plts[$index].currentRow + $plts[$index].currentCol);
+    var $currSq = getSq(platoon.currentRow + platoon.currentCol);
     var $status = "stopped";
     var $title  = ": Stopped";
-    if ($currSq == $plts[$index].homeSq.substr(3)) {
+    if ($currSq == platoon.homeSq.substr(3)) {
         $status = "base";
         $title = ": At Base";
-        if ($plts[$index].msg != "") {
-            $('#captureTB').append('<p>' + $plts[$index].msg + '</p>');
-            $plts[$index].msg = "";
+        if (platoon.msg != "") {
+            $('#captureTB').append('<p>' + platoon.msg + '</p>');
+            platoon.msg = "";
             $targetsdone++;
         }
         
-        if ($plts[$index].points > 0) {
+        if (platoon.points > 0) {
             //update score progress bar
             if ($frame == "+"){
-                $score = $score + $plts[$index].points;
+                $score = $score + platoon.points;
             } else {
-                $score = $score - $plts[$index].points;
+                $score = $score - platoon.points;
             }
             
             $('#progShell').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100, function() {
@@ -140,7 +193,7 @@ function stopPlt($plts,$index,$score,$maxScore) {
             },'slow');
             });
             
-            $plts[$index].points = 0;
+            platoon.points = 0;
             
             if ($score == $maxScore) {
                 //game is over
@@ -148,11 +201,11 @@ function stopPlt($plts,$index,$score,$maxScore) {
         }
         
         //need to end the game here if all targets have been found or missed
-        if ($targetsdone >= $nHvts){
+        if ($targetsdone >= ntargets){
             endGame();
         }
     }
-    $plts[$index].status = $status;
+    platoon.status = $status;
     
     //disable the appropriate button and change status
     $('#status' + ($index+1) + ' p').html('Platoon ' + ($index+1) + $title);
@@ -323,230 +376,299 @@ function timer($elapsedTime) {
     return $elapsedTime;
 }
 
-var myvar;
-function tutorialtimer() {
-    myvar = setInterval(function() {
-        
-    $elapsedTime = timer($elapsedTime);
-    //check if any platoons are moving
-    for (i=0; i<$plts.length; i++) {
-        if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
-            if ($elapsedTime >= $plts[i].lastMoveTime + 3){
-                //move the platoon (update current row and current col)
-                $plts[i].lastMoveTime = $elapsedTime;
+function endGame() {
+    $('#captureTB').append('<p>Finished!</p>');
+    
+    if ($phase == "practice"){
+        timerdone = true;
+        clearInterval(myvar);
+        console.log("practice over?");
+        tutorial2();
+    }
+    
+    //clearInterval(mytimer);
+}
 
-                if ($plts[i].xfirst) {
-                    if ($plts[i].currentCol != $plts[i].goalCol) {
-                        if ($plts[i].goalCol < $plts[i].currentCol) {$plts[i].currentCol--;}
-                        else {$plts[i].currentCol++;}   
-                    }
-                    else if ($plts[i].currentRow != $plts[i].goalRow){
-                        if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-                            $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-                        }
-                        else {
-                            $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-                        } 
+function movePlatoon(platoon,ntargets){
+    platoon.lastMoveTime = $elapsedTime;
+
+    if (platoon.xfirst) {
+        if (platoon.currentCol != platoon.goalCol) {
+            if (platoon.goalCol < platoon.currentCol) {platoon.currentCol--;}
+            else {platoon.currentCol++;}   
+        }
+        else if (platoon.currentRow != platoon.goalRow){
+            if (platoon.goalRow.charCodeAt(0) < platoon.currentRow.charCodeAt(0)) {
+                platoon.currentRow = String.fromCharCode(platoon.currentRow.charCodeAt(0) - 1);
+            }
+            else {
+                platoon.currentRow = String.fromCharCode(platoon.currentRow.charCodeAt(0) + 1);
+            } 
+        }
+    }
+
+    else {
+        if (platoon.currentRow != platoon.goalRow){
+            if (platoon.goalRow.charCodeAt(0) < platoon.currentRow.charCodeAt(0)) {
+                platoon.currentRow = String.fromCharCode(platoon.currentRow.charCodeAt(0) - 1);
+            }
+            else {
+                platoon.currentRow = String.fromCharCode(platoon.currentRow.charCodeAt(0) + 1);
+            } 
+        }
+        else if (platoon.currentCol != platoon.goalCol) {
+            if (platoon.goalCol < platoon.currentCol) { platoon.currentCol--;}
+            else {platoon.currentCol++;}                        
+        }
+    }
+
+    if ((platoon.currentRow == platoon.goalRow) && (platoon.currentCol == platoon.goalCol)){
+        $score = stopPlt(platoon,$score,$maxScore,ntargets);
+    }
+}
+
+function checkCaptures(platoon, ntargets,phase){
+    var i = $plts.indexOf(platoon);
+    for (j=0; j<ntargets; j++) {
+        if ($hvts[j].status == "active") {             
+            if (getSq(platoon.currentRow+platoon.currentCol) == $hvts[j].loc){  
+                //capture or false alarm                        
+                
+                var $capture = -1;
+                var $hvtType = "HVT ";
+                
+                if (phase = "practice"){
+                    $capture = 1;
+                } else {
+                    if ($hvts[j].type == "low") {
+                        //make capture 100%
+                        $capture = 1;
+                        $hvtType = "LVT "
+                    } else if ($hvts[j].type == "high") {
+                        //make false alarm 50% likely, then hvt goes away
+                        $capture = Math.floor(Math.random() * 2);
+                        console.log('hvt' + j + $capture);  
+                    } else {
+                        //shouldn't be eligible to be captured
                     }
                 }
 
+                if ($capture > 0) {
+                    $hvts[j].status = "captured";
+
+
+                    if ($hvts[j].type == "low") {
+                        platoon.points = $lvtPoints;
+
+                    } else if ($hvts[j].type == "high") {
+                        if ($frame == "+"){
+                            platoon.points = $hvtPoints;
+                        }
+                    }
+                    platoon.msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + platoon.points + ")";
+                    var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: platoon.points, unit: i, target: j};
+                    data2 += "," + JSON.stringify(tempdataobj);    
+                }
                 else {
-                    if ($plts[i].currentRow != $plts[i].goalRow){
-                        if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-                            $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
+                    $hvts[j].status = "lost";
+                    if ($hvts[j].type == "high"){
+                        if ($frame == "-"){
+                            platoon.points = $hvtPoints;
                         }
-                        else {
-                            $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-                        } 
                     }
-                    else if ($plts[i].currentCol != $plts[i].goalCol) {
-                        if ($plts[i].goalCol < $plts[i].currentCol) { $plts[i].currentCol--;}
-                        else {$plts[i].currentCol++;}                        
-                    }
+                    platoon.msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " false alarm (" + $frame + platoon.points + ")";
+                    var tempdataobj = {time: $elapsedTime, type: "targetloss", points: platoon.points, unit: i, target: j};
+                    data2 += "," + JSON.stringify(tempdataobj); 
                 }
+                if (platoon.status == "moving") {
+                    $score = stopPlt(platoon,$score,$maxScore,ntargets);
+                }
+                platoon.status = "returning";
+                var $goalSq = parseInt(platoon.homeSq.substr(3)) + 1;
+                platoon.goalRow = getCoords($goalSq).substr(0,1);
+                platoon.goalCol = parseInt(getCoords($goalSq).substr(1));
+                platoon.lastMoveTime = $elapsedTime;
+                $('#' + platoon.id).fadeOut(0);
+                  
+                startPlt($plts,i);
+                break
+            }
+        }
+    }   
+}
 
-                if (($plts[i].currentRow == $plts[i].goalRow) && ($plts[i].currentCol == $plts[i].goalCol)){
-                    $score = stopPlt($plts,i,$score,$maxScore);
+function getReportedSquare(targ,intel){
+    
+    var $reportedSq = getCoords(targ.loc + 1)               
+    var $targRow = $reportedSq.substr(0,1).charCodeAt(0) - letter;
+    var $targCol = parseInt($reportedSq.substr(1)) - 1;
+
+    //figure out how to make this a different value for each target if needed (for practice)
+    //var $accuracy = $srcAccuracy[j];
+    var $accuracy = intel.acc[i];
+    var $possibleSqs = [];
+
+    //need to figure out accuracy values
+    //if 3, always reported square?
+    //if 2, 75%, 25%
+    //if 1, 50%, 50%
+    //if 4, only surrounding squares
+    //if 5, widen to 25 squares
+
+    //get possible surrounding squares
+    //get 8 surrounding squares (less if near edge) + indicated square (9 possibilites)
+    //need this to just be the surrounding squares, actually?
+    for (k=-1; k<2; k++){
+        for (l=-1; l<2; l++) {
+            $tempRow = $targRow + k;
+            $tempCol = $targCol + l;
+            //make sure it's within bounds
+            if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
+                $tempRow = String.fromCharCode($tempRow + letter);
+                $tempCol = $tempCol + 1;
+                if ($tempRow + $tempCol != $reportedSq){
+                    $possibleSqs.push($tempRow + $tempCol);
                 }
             }
         }
-
-//        if (($plts[i].status == "moving") || ($plts[i].status == "stopped")) {
-//            //check to see if any targets are captured
-//
-//            for (j=0; j<$nHvts; j++) {
-//                if ($hvts[j].status == "active") {             
-//                    if (getSq($plts[i].currentRow+$plts[i].currentCol) == $hvts[j].loc){  
-//                        //capture or false alarm                        
-//                        //current hvt is "j"
-//
-//                        var $capture = -1;
-//                        var $hvtType = "HVT ";
-//
-//                        if ($hvts[j].type == "low") {
-//                            //make capture 100%
-//                            $capture = 1;
-//                            $hvtType = "LVT "
-//                        } else if ($hvts[j].type == "high") {
-//                            //make false alarm 50% likely, then hvt goes away
-//                            $capture = Math.floor(Math.random() * 2);
-//                            console.log('hvt' + j + $capture);  
-//                        } else {
-//                            //shouldn't be eligible to be captured
-//                        }
-//
-//                        if ($capture > 0) {
-//                            $hvts[j].status = "captured";
-//
-//
-//                            if ($hvts[j].type == "low") {
-//                                $plts[i].points = $lvtPoints;
-//
-//                            } else if ($hvts[j].type == "high") {
-//                                if ($frame == "+"){
-//                                    $plts[i].points = $hvtPoints;
-//                                }
-//                            }
-//                            $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
-//                            var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
-//                            data2 += "," + JSON.stringify(tempdataobj);    
-//                        }
-//                        else {
-//                            $hvts[j].status = "lost";
-//                            if ($hvts[j].type == "high"){
-//                                if ($frame == "-"){
-//                                    $plts[i].points = $hvtPoints;
-//                                }
-//                            }
-//                            $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
-//                            var tempdataobj = {time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j};
-//                            data2 += "," + JSON.stringify(tempdataobj); 
-//                        }
-//                        if ($plts[i].status == "moving") {
-//                            $score = stopPlt($plts,i,$score,$maxScore);
-//                        }
-//                        $plts[i].status = "returning";
-//                        var $goalSq = parseInt($plts[i].homeSq.substr(3)) + 1;
-//                        $plts[i].goalRow = getCoords($goalSq).substr(0,1);
-//                        $plts[i].goalCol = parseInt(getCoords($goalSq).substr(1));
-//                        $plts[i].lastMoveTime = $elapsedTime;
-//                        $('#plt' + (i+1)).fadeOut(0);
-//                        startPlt($plts,i);
-//                        break
-//                    }
-//                }
-//            }   
-//        }
     }
 
-//    //activate targets, add intel notifications
-//    for (i=0; i<$nHvts; i++){
-//        if ($elapsedTime == $hvts[i].startTime){
-//            //$hvts[i].status = "active";
-//
-//            //go through 2 intel boxes
-//            for (j=0; j<2; j++){
-//
-//                var $reportedSq = getCoords($hvts[i].loc + 1)               
-//                var $targRow = $reportedSq.substr(0,1).charCodeAt(0) - letter;
-//                var $targCol = parseInt($reportedSq.substr(1)) - 1;
-//
-//                var $accuracy = $srcAccuracy[j];
-//                var $possibleSqs = [];
-//
-//                if ($accuracy < 3) {
-//                    //get 8 surrounding squares (less if near edge) + indicated square (9 possibilites)
-//                    for (k=-1; k<2; k++){
-//                        for (l=-1; l<2; l++) {
-//                            $tempRow = $targRow + k;
-//                            $tempCol = $targCol + l;
-//                            //make sure it's within bounds
-//                            if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
-//                                $tempRow = String.fromCharCode($tempRow + letter);
-//                                $tempCol = $tempCol + 1;
-//                                $possibleSqs.push($tempRow + $tempCol);
-//                            }
-//                        }
-//                    }
-//
-//                    if ($accuracy == 1) {
-//                        //.75 correct square, .25 one of the surrounding 9
-//                        var $randNum = Math.floor(Math.random() * 4);
-//                        if ($randNum < 3) {
-//                            //reported square is accurate
-//                        }
-//                        else {
-//                            var $randNum = Math.floor(Math.random() * $possibleSqs.length);
-//                            $reportedSq = $possibleSqs[$randNum];
-//                        }
-//                    }
-//                    else if ($accuracy == 2) {
-//                        //pick one of these 9 randomly
-//                        var $randNum = Math.floor(Math.random() * $possibleSqs.length);
-//                        $reportedSq = $possibleSqs[$randNum];
-//                    }
-//                }
-//
-//                else if ($accuracy == 3) {
-//                    //get 25 surrounding squares (less if near edge)
-//                    //let's not do this one
-//                    for (k=-2; k<3; k++){
-//                        for (l=-2; l<3; l++) {
-//                            $tempRow = $targRow + k;
-//                            $tempCol = $targCol + l;
-//                            //make sure it's within bounds
-//                            if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
-//                                $tempRow = String.fromCharCode($tempRow + letter);
-//                                $tempCol = $tempCol + 1;
-//                                $possibleSqs.push($tempRow + $tempCol);
-//                            }
-//                        }
-//                    }
-//                    //pick one of these randomly
-//                    var $randNum = Math.floor(Math.random() * $possibleSqs.length);
-//                    $reportedSq = $possibleSqs[$randNum];
-//                }
-//
-//                var $risk = $srcRisk[j];
-//
-//                //think about populating this info on the spot instead of ahead of time, to mitigate some cheating
-//                if ($risk == "high"){
-//                    $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
-//                } else {
-//                    $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">LVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
-//                }                         
-//
-//                $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>');
-//                $('#intel' + (j+1) + ' #info' + i).on('click', 'button', function() {
-//
-//                    //which hvt line is this?
-//                    var $temphvt = $(this).parent().attr('id').substr(4);
-//                    $hvts[$temphvt].status = "active";
-//
-//                    //show location info, disable button in other intel box
-//                    $('.intelTBs #info' + $temphvt).find('button').prop('disabled', true);
-//                    $(this).hide();
-//                    $(this).parent().find('span').fadeIn('fast');            
-//
-//                    $('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', 'lightgray');
-//
-//                    //depending on which source was clicked, assign whether hvt type is low or high value
-//                    var $tempintel = $(this).parent().parent().attr("id").substr(5)-1;
-//                    if ($intels[$tempintel].risk == "low"){
-//                        $hvts[$temphvt].type = "low";
-//                    } else {
-//                        $hvts[$temphvt].type = "high";
-//                    }
-//
-//                    var tempdataobj = {time: $elapsedTime, type: "choosesource", target: $temphvt, risk: $intels[$tempintel].risk, reportedSq: $(this).parent().find('span')[0].innerHTML}                                                                   
-//                    data2 += "," + JSON.stringify(tempdataobj);
-//                });
-//
-//            }
-//        }
-//    } 
+    switch($accuracy) {
 
-}, 1000);
+      case 1:
+        //.5 correct square, .5 one of the surrounding 9
+        var $randNum = Math.floor(Math.random() * 2);
+        if ($randNum < 1) {
+            //reported square is accurate
+        }
+        else {
+            var $randNum = Math.floor(Math.random() * $possibleSqs.length);
+            $reportedSq = $possibleSqs[$randNum];
+        }
+        break;
+      case 2:
+        var $randNum = Math.floor(Math.random() * 4);
+        if ($randNum > 3) {
+            var $randNum = Math.floor(Math.random() * $possibleSqs.length);
+            $reportedSq = $possibleSqs[$randNum];
+        }
+        break;
+      case 3:
+        // use reported square
+        break;
+        case 4:
+          //pick one of the surrounding squares randomly
+          var $randNum = Math.floor(Math.random() * $possibleSqs.length);
+          $reportedSq = $possibleSqs[$randNum];
+            break;
+        case 5:
+            //get 25 surrounding squares (less if near edge)
+            //let's not do this one
+            for (k=-2; k<3; k++){
+                for (l=-2; l<3; l++) {
+                    $tempRow = $targRow + k;
+                    $tempCol = $targCol + l;
+                    //make sure it's within bounds
+                    if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
+                        $tempRow = String.fromCharCode($tempRow + letter);
+                        $tempCol = $tempCol + 1;
+                        $possibleSqs.push($tempRow + $tempCol);
+                    }
+                }
+            }
+            //pick one of these randomly
+            var $randNum = Math.floor(Math.random() * $possibleSqs.length);
+            $reportedSq = $possibleSqs[$randNum];
+    }
+    return $reportedSq;
+}
+
+function populateIntel(intel,j,i,reportedsq){
+        
+    var $risk = intel.risk;
+                
+    //think about populating this info on the spot instead of ahead of time, to mitigate some cheating
+    if ($risk == "high"){
+        $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + reportedsq + '</span></p>');
+    } else {
+        $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">LVT' + (i+1) + ' sighted at <span id="span' + i + '">' + reportedsq + '</span></p>');
+    }                         
+
+    $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>');
+    $('#intel' + (j+1) + ' #info' + i).on('click', 'button', function() {
+
+        //which hvt line is this?
+        var $temphvt = $(this).parent().attr('id').substr(4);
+        $hvts[$temphvt].status = "active";
+
+        //show location info, disable button in other intel box
+        $('.intelTBs #info' + $temphvt).find('button').prop('disabled', true);
+        $(this).hide();
+        $(this).parent().find('span').fadeIn('fast');            
+
+        $('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', 'lightgray');
+
+        //depending on which source was clicked, assign whether hvt type is low or high value
+        var $tempintel = $(this).parent().parent().attr("id").substr(5)-1;
+        if ($intels[$tempintel].risk == "low"){
+            $hvts[$temphvt].type = "low";
+        } else {
+            $hvts[$temphvt].type = "high";
+        }
+
+        var tempdataobj = {time: $elapsedTime, type: "choosesource", target: $temphvt, risk: $intels[$tempintel].risk, reportedSq: $(this).parent().find('span')[0].innerHTML}                                                                   
+        data2 += "," + JSON.stringify(tempdataobj);
+    });
+}
+
+//var myvar;
+function testtimer(ntargets,phase) {
+    timerdone = false;
+    myvar = setInterval(function() {
+        
+        $elapsedTime = timer($elapsedTime);
+        //check if any platoons are moving
+
+        for (i=0; i<$plts.length; i++) {
+            if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
+                if ($elapsedTime >= $plts[i].lastMoveTime + 3){
+                    movePlatoon($plts[i],ntargets);
+                }
+            }
+            if (!timerdone){
+                
+            
+                if (($plts[i].status == "moving") || ($plts[i].status == "stopped")) {
+                    console.log($plts[i].status);
+                    //check to see if any targets are captured          
+                    checkCaptures($plts[i], ntargets,phase)
+
+                }
+            }
+        }
+        
+        
+        
+        //console.log($elapsedTime);
+        if (!timerdone) {
+            //activate targets, add intel notifications
+            for (i=0; i<ntargets; i++){
+                if ($elapsedTime == $hvts[i].startTime){
+
+                    //go through 2 intel boxes
+                    for (var j=0; j<$intels.length; j++){
+
+                        var $reportedSq = getReportedSquare($hvts[i], $intels[j]);
+                        populateIntel($intels[j],j,i,$reportedSq);
+
+                    }
+                }
+            } 
+        };
+
+        
+
+    }, 1000);
 }
 
 

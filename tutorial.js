@@ -1,8 +1,8 @@
-function startTutorial() {
+function startTutorial($frame) {
     
-    
+    console.log($frame);
     //create tutorial timer
-    var myvar;
+    
     
     function tutorialtimer() {
         myvar = setInterval(function() {
@@ -81,8 +81,12 @@ function startTutorial() {
                             } else if ($hvts[j].type == "high") {
                                 if ($frame == "+"){
                                     $plts[i].points = $hvtPoints;
+                                    
                                 }
+                                console.log($frame)
+                                
                             }
+                            console.log($plts[i])
                             $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
                             var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
                             data2 += "," + JSON.stringify(tempdataobj);    
@@ -114,7 +118,7 @@ function startTutorial() {
                 } 
             }
         }
-    }, 1000)};
+    }, 100)};
 
     //create tutorial hvts
     $hvts[0] = new target(74,1);
@@ -135,7 +139,6 @@ function startTutorial() {
         switch(targetElement.id) {
             case "scorePanel":
                 $li1 = $("#cbPanel>ul>li").first();
-                console.log($li1);
                 if (!($li1.children('span').html().charCodeAt(0) == 10004 & $li1.children('span').hasClass('show'))){
                     myintro.previousStep();
                 }
@@ -178,56 +181,43 @@ function startTutorial() {
             case "status":
                 
                 $('#sq74').off('click.tutorial');
-        //start a platoon moving
-        $plts[1].status = "moving";
-        $plts[1].goalRow = "A";
-        $plts[1].goalCol = 1;
-        $plts[1].lastMoveTime = $elapsedTime;
-        $('#plt2').fadeOut(0);
-        startPlt($plts,1);
-                
-                
-                
+                //start a platoon moving
+                $plts[1].status = "moving";
+                $plts[1].goalRow = "A";
+                $plts[1].goalCol = 1;
+                $plts[1].lastMoveTime = $elapsedTime;
+                $('#plt2').fadeOut(0);
+                startPlt($plts,1);       
                 break;
+                
             case "intel1":
-                console.log(this._currentStep)
+                
                 if(this._currentStep == 14){
                     stopPlt($plts,1,0,0)
-                    
-//                    var surroundSqs = [59,60,61,73,75,87,88,89];
-//                    for (i=0; i<surroundSqs.length; i++){
-//                        $('#sq' + surroundSqs[i]).addClass('tutorial2');
-//                    }
                 }
-                    break;
+                break;
+                
             case "littleoverlay":
                     
                     
-                                    if(this._currentStep == 15){
+                if(this._currentStep == 15){
                                         
-                                        $('#sq74').addClass('tutorial1');
-                                        var surroundSqs = [59,60,61,73,75,87,88,89];
+                    $('#sq74').addClass('tutorial1');
+                    var surroundSqs = [59,60,61,73,75,87,88,89];
                     for (i=0; i<surroundSqs.length; i++){
                         $('#sq' + surroundSqs[i]).addClass('tutorial2');
                     }
                 }
+            }
 
-
-
-        }
-
-
-
-}).onexit(function(){
-        console.log('its over')
-        
-        
-        
-    }).setOptions({
-        
+    }).onexit(function() {
+        clearInterval(myvar);
+        startPractice($frame);
+}).setOptions({
+            keyboardNavigation: false,
             exitOnOverlayClick: false,
             showBullets: false,
-          steps: [
+            steps: [
               { 
                 title: 'Welcome!',
                 intro: 'Your task is to find and capture targets that have been spotted in the area.'
@@ -251,7 +241,7 @@ function startTutorial() {
             },
             {
                 element: document.querySelector('#sq74'),
-                intro: 'Click on F5 to send this unit to capture the target seen there.',
+                intro: 'Click on the map at F5 to send this unit to capture the target seen there.',
                 position: 'right'
             },
                   
@@ -301,11 +291,12 @@ function startTutorial() {
                 element: document.querySelector('#littleoverlay'),
                 intro: 'If not, it will be in one of the immediately surrounding squares</p>',
               position:'top'
-              }]
-        }).start();
-//        .goToStep(13);
-    
-    
-    
+              },
+            {
+            element: document.querySelector('.card__image'),
+            intro: "Great! Now let's practice"
+          }]
+        }).start().goToStep(16);
+//        .goToStep(14); 
     
     }

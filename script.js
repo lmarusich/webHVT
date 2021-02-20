@@ -5,6 +5,7 @@
 //start test
 
 //test variables
+var $phase = "tutorial";
 var $frame = "+";
 var $nHvts = 5;
 var $startTime = 5;
@@ -14,7 +15,7 @@ var $score = 0;
 var $maxScore = $nHvts * 2;
 var $hvtPoints = 2;
 var $lvtPoints = 1;
-var $srcAccuracy = shuffle([1,1]);
+//var $srcAccuracy = shuffle([1,1]);
 // 1 means 75% at indicated square, 2 means equal probs for 9 squares, 3 means equal for 25 squares
 // make them both 1s for now, maybe change 75% to 50%
 var $srcRisk = shuffle(["high", "low"]);
@@ -54,7 +55,8 @@ $(document).ready(function(){
         //adjust height and location of elements based on window size
         changeHeight();
         //need to disable resizing if tutorial is running?
-        startTutorial();
+        startTutorial($frame);
+        
     });
     
     //match time/pause panel width to assignUnit panel width
@@ -159,6 +161,7 @@ $(document).ready(function(){
     });
     
     $('.mapSquare').on("mouseover",function() {   
+        //console.log('hover');
         $('.mapSquare').removeClass('hover');
         var $sqNum = $(this).attr('id').substr(2);              
         if($('.plt').hasClass("highlight")) {
