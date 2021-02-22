@@ -33,7 +33,7 @@
 function resetAll($frame, ntargets){
     
     $targetsdone = 0;
-    var $maxScore = ntargets * 2;
+    $maxScore = ntargets * 2;
     
     $elapsedTime = 0;
     $('.mapSquare').removeClass('tutorial1 tutorial2 clickadded');
@@ -210,8 +210,6 @@ function stopPlt(platoon,$score,$maxScore,ntargets) {
         
         //need to end the game here if all targets have been found or missed
         if ($targetsdone >= ntargets){
-            console.log($targetsdone);
-            console.log(ntargets);
                 endGame();         
         }
     }
@@ -388,18 +386,23 @@ function timer($elapsedTime) {
 
 function endGame() {
     
+    if ($phase != 'tutorial'){
+        $('#captureTB').append('<p>Finished!</p>');
+        
+        if ($phase == "practice"){
+            timerdone = true;
+            clearInterval(myvar);
+            console.log("practice over?");
+            setTimeout(function(){
+                tutorial2();
+            },3000);
 
-    $('#captureTB').append('<p>Finished!</p>');
-    
-    if ($phase == "practice"){
-        timerdone = true;
-        clearInterval(myvar);
-        console.log("practice over?");
-        setTimeout(function(){
-            tutorial2();
-        },3000);
+        }
         
     }
+    
+    
+    
     
     //clearInterval(mytimer);
 }
@@ -677,7 +680,7 @@ function testtimer(ntargets,phase) {
 
         
 
-    }, 100);
+    }, 1000);
 }
 
 
@@ -810,6 +813,6 @@ function tutorialtimer(ntargets) {
             }
             }
         }
-    }, 100)};
+    }, 1000)};
 
 

@@ -1,3 +1,6 @@
+gainsheading = [': HVTs (+2/+0)', ': LVTs (+1)'];
+lossheading = [': HVTs (-2/-0)', ': LVTs (-1)'];
+
 gainstext = [
     'Great job!',
     'There will be a number of <b>HIGH</b> value targets (HVTs) in the area that you can find and capture. Capturing an HVT adds 2 points to your score.',
@@ -83,8 +86,10 @@ function tutorial2(){
     $phase = 'practice2';
     
     var introtext = gainstext;
+    var headingtext = gainsheading;
     if ($frame == "-"){
         introtext = losstext;
+        headingtext = lossheading;
     }
     
     var ntargets = 4;
@@ -114,20 +119,16 @@ function tutorial2(){
         myintro2.nextStep();
     }); 
     
-    
     $('p.hvtinfo').css('visibility','hidden');
     
     myintro2 = introJs();
-    
-    //going to have to populate all the intel at the beginning, make it invisible
-    //use the steps to reveal it, instead of populating it :(
            
     myintro2.onafterchange(function(targetElement){
         console.log(this._currentStep);
         if (targetElement.id == 'intel' + whichHigh && this._currentStep == 3){
-            $('#intel' + whichHigh + '>H4').html($('#intel' + whichHigh + '>H4').html() + ': HVTs (+2/+0)');
+            $('#intel' + whichHigh + '>H4').html($('#intel' + whichHigh + '>H4').html() + headingtext[0]);
         } else if (targetElement.id == 'intel' + whichLow && this._currentStep == 5){
-           $('#intel' + whichLow + '>H4').html($('#intel' + whichLow + '>H4').html() + ': LVTs (+1)');
+           $('#intel' + whichLow + '>H4').html($('#intel' + whichLow + '>H4').html() + headingtext[1]);
         } else if (targetElement.id == 'intelPanel'){
             //disable buttons?
             if (this._currentStep == 7){

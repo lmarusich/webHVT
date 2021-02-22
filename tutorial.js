@@ -7,7 +7,6 @@ function startTutorial($frame) {
     
     var ntargets = 1;
     
-
     //create tutorial hvts
     $hvts[0] = new target(74,1);
     $hvts[0].status = 'active';
@@ -50,7 +49,7 @@ function startTutorial($frame) {
                 }
                 
                 if(this._currentStep == 14){
-                    stopPlt($plts,1,0,0)
+                    stopPlt($plts[1],0,0,ntargets)
                     $('#sq74').addClass('tutorial1');
                    
                 }
@@ -81,7 +80,7 @@ function startTutorial($frame) {
             case "intel1":
                 
                 if(this._currentStep == 14){
-                    stopPlt($plts,1,0,0)
+                    stopPlt($plts[1],0,0,ntargets)
                 }
                 break;
                 
@@ -185,7 +184,7 @@ function startTutorial($frame) {
             element: document.querySelector('.card__image'),
             intro: "Great! Now let's practice"
           }]
-        }).start().goToStep(17);
+        }).start();
 //        .goToStep(14); 
     
     }
