@@ -16,8 +16,6 @@ var $maxScore = $nHvts * 2;
 var $hvtPoints = 2;
 var $lvtPoints = 1;
 //var $srcAccuracy = shuffle([1,1]);
-// 1 means 75% at indicated square, 2 means equal probs for 9 squares, 3 means equal for 25 squares
-// make them both 1s for now, maybe change 75% to 50%
 var $srcRisk = shuffle(["high", "low"]);
 //randomize which source is a gamble vs a sure thing
 var $hvts = [];
@@ -214,7 +212,7 @@ $(document).ready(function(){
         var whichPlt = parseInt($(this).parent().attr('id').substr(6))-1;
         var tempdataobj = {time: $elapsedTime, type: "stopunit", unit: whichPlt, currentSq: $plts[whichPlt].currentRow + $plts[whichPlt].currentCol};
         data2 += "," + JSON.stringify(tempdataobj);
-        $score = stopPlt($plts,whichPlt,$score,$maxScore);
+        $score = stopPlt($plts[whichPlt],whichPlt,$score,$maxScore);
     });
     
     var myVar;

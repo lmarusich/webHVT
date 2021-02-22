@@ -32,10 +32,12 @@
 //reset everything for each practice and test run
 function resetAll($frame, ntargets){
     
-    //hvts
+    $targetsdone = 0;
+    var $maxScore = ntargets * 2;
     
     $elapsedTime = 0;
     $('.mapSquare').removeClass('tutorial1 tutorial2 clickadded');
+    $('button').removeClass('clickadded');
     
     //make array of 4 platoons
     $plts = [
@@ -164,7 +166,7 @@ function startPlt($plts,$index) {
 function stopPlt(platoon,$score,$maxScore,ntargets) {
     
     var $index = $plts.indexOf(platoon);
-
+    console.log(platoon.currentRow + platoon.currentCol)
     var $currSq = getSq(platoon.currentRow + platoon.currentCol);
     var $status = "stopped";
     var $title  = ": Stopped";
@@ -200,9 +202,17 @@ function stopPlt(platoon,$score,$maxScore,ntargets) {
             }
         }
         
+        //move through 2nd tutorial/practice steps
+        if ($phase == "practice2"){
+            myintro2.nextStep();
+            
+        }
+        
         //need to end the game here if all targets have been found or missed
         if ($targetsdone >= ntargets){
-            endGame();
+            console.log($targetsdone);
+            console.log(ntargets);
+                endGame();         
         }
     }
     platoon.status = $status;
@@ -377,13 +387,18 @@ function timer($elapsedTime) {
 }
 
 function endGame() {
+    
+
     $('#captureTB').append('<p>Finished!</p>');
     
     if ($phase == "practice"){
         timerdone = true;
         clearInterval(myvar);
         console.log("practice over?");
-        tutorial2();
+        setTimeout(function(){
+            tutorial2();
+        },3000);
+        
     }
     
     //clearInterval(mytimer);
@@ -635,21 +650,15 @@ function testtimer(ntargets,phase) {
                     movePlatoon($plts[i],ntargets);
                 }
             }
-            if (!timerdone){
-                
             
+            if (!timerdone){                
                 if (($plts[i].status == "moving") || ($plts[i].status == "stopped")) {
-                    console.log($plts[i].status);
                     //check to see if any targets are captured          
                     checkCaptures($plts[i], ntargets,phase)
-
                 }
             }
         }
         
-        
-        
-        //console.log($elapsedTime);
         if (!timerdone) {
             //activate targets, add intel notifications
             for (i=0; i<ntargets; i++){
@@ -668,8 +677,139 @@ function testtimer(ntargets,phase) {
 
         
 
-    }, 1000);
+    }, 100);
 }
 
+
+function tutorialtimer(ntargets) {
+        
+        console.log(ntargets);
+        myvar = setInterval(function() {
+        
+        $elapsedTime = timer($elapsedTime);
+        //check if any platoons are moving
+        for (i=0; i<$plts.length; i++) {
+            if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
+                if ($elapsedTime >= $plts[i].lastMoveTime + 3){
+                    //move the platoon (update current row and current col)
+                    $plts[i].lastMoveTime = $elapsedTime;
+
+                    if ($plts[i].xfirst) {
+                        if ($plts[i].currentCol != $plts[i].goalCol) {
+                            if ($plts[i].goalCol < $plts[i].currentCol) {$plts[i].currentCol--;}
+                            else {$plts[i].currentCol++;}   
+                        }
+                        else if ($plts[i].currentRow != $plts[i].goalRow){
+                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
+                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
+                            }
+                            else {
+                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
+                            } 
+                        }
+                    }
+
+                    else {
+                        if ($plts[i].currentRow != $plts[i].goalRow){
+                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
+                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
+                            }
+                            else {
+                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
+                            } 
+                        }
+                        else if ($plts[i].currentCol != $plts[i].goalCol) {
+                            if ($plts[i].goalCol < $plts[i].currentCol) { $plts[i].currentCol--;}
+                            else {$plts[i].currentCol++;}                        
+                        }
+                    }
+
+                    if (($plts[i].currentRow == $plts[i].goalRow) && ($plts[i].currentCol == $plts[i].goalCol)){
+                        if ($plts[i].status == "returning" && $phase == "tutorial"){
+                             $('.introjs-tooltipbuttons').css('visibility','visible');
+                            myintro.nextStep()
+                        }
+
+                        $score = stopPlt($plts[i],$score,$maxScore,ntargets);
+
+                    }
+                }
+            }
+
+            if (($plts[i].status == "moving") || ($plts[i].status == "stopped")) {
+                //check to see if the tutorial target is captured
+                for (j=0; j<ntargets; j++) {
+
+
+                if ($hvts[j].status == "active") {             
+                    if (getSq($plts[i].currentRow+$plts[i].currentCol) == $hvts[j].loc){  
+                        //capture or false alarm                        
+                        //current hvt is "j"
+                        
+                        var $capture = 1;
+
+                        //hardwire capture or not for tutorials?
+                        if (j ==1){
+                            $capture = 0;
+                        }
+                        
+                        var $hvtType = "HVT ";
+                        if ($hvts[j].type == "low") {
+                            $hvtType = "LVT "
+                        }
+
+
+                        if ($capture > 0) {
+                            $hvts[j].status = "captured";
+
+
+                            if ($hvts[j].type == "low") {
+                                $plts[i].points = $lvtPoints;
+
+                            } else if ($hvts[j].type == "high") {
+                                if ($frame == "+"){
+                                    $plts[i].points = $hvtPoints;
+                                    
+                                }
+                                console.log($frame)
+                                
+                            }
+                            console.log($plts[i])
+                            $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
+                            var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
+                            data2 += "," + JSON.stringify(tempdataobj);    
+                        }
+                        else {
+                            $hvts[j].status = "lost";
+                            if ($hvts[j].type == "high"){
+                                if ($frame == "-"){
+                                    $plts[i].points = $hvtPoints;
+                                }
+                            }
+                            $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
+                            var tempdataobj = {time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j};
+                            data2 += "," + JSON.stringify(tempdataobj); 
+                        }
+                        if ($plts[i].status == "moving") {
+                            $score = stopPlt($plts[i],$score,$maxScore,ntargets);
+                        }
+                        $plts[i].status = "returning";
+                        var $goalSq = parseInt($plts[i].homeSq.substr(3)) + 1;
+                        $plts[i].goalRow = getCoords($goalSq).substr(0,1);
+                        $plts[i].goalCol = parseInt(getCoords($goalSq).substr(1));
+                        $plts[i].lastMoveTime = $elapsedTime;
+                        $('#plt' + (i+1)).fadeOut(0);
+                        startPlt($plts,i);
+                        if ($phase == "tutorial"){
+                             myintro.nextStep();
+                        }  
+                       
+                        break
+                    }
+                } 
+            }
+            }
+        }
+    }, 100)};
 
 

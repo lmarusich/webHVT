@@ -3,136 +3,24 @@ function startTutorial($frame) {
     console.log($frame);
     //create tutorial timer
     
+    $phase = "tutorial";
     
-    function tutorialtimer() {
-        myvar = setInterval(function() {
-        
-        $elapsedTime = timer($elapsedTime);
-        //check if any platoons are moving
-        for (i=0; i<$plts.length; i++) {
-            if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
-                if ($elapsedTime >= $plts[i].lastMoveTime + 3){
-                    //move the platoon (update current row and current col)
-                    $plts[i].lastMoveTime = $elapsedTime;
-
-                    if ($plts[i].xfirst) {
-                        if ($plts[i].currentCol != $plts[i].goalCol) {
-                            if ($plts[i].goalCol < $plts[i].currentCol) {$plts[i].currentCol--;}
-                            else {$plts[i].currentCol++;}   
-                        }
-                        else if ($plts[i].currentRow != $plts[i].goalRow){
-                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-                            }
-                            else {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-                            } 
-                        }
-                    }
-
-                    else {
-                        if ($plts[i].currentRow != $plts[i].goalRow){
-                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-                            }
-                            else {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-                            } 
-                        }
-                        else if ($plts[i].currentCol != $plts[i].goalCol) {
-                            if ($plts[i].goalCol < $plts[i].currentCol) { $plts[i].currentCol--;}
-                            else {$plts[i].currentCol++;}                        
-                        }
-                    }
-
-                    if (($plts[i].currentRow == $plts[i].goalRow) && ($plts[i].currentCol == $plts[i].goalCol)){
-                        if ($plts[i].status == "returning"){
-                             $('.introjs-tooltipbuttons').css('visibility','visible');
-                            myintro.nextStep()
-                        }
-
-                        $score = stopPlt($plts,i,$score,$maxScore);
-
-                    }
-                }
-            }
-
-            if (($plts[i].status == "moving") || ($plts[i].status == "stopped")) {
-                //check to see if the tutorial target is captured
-                j = 0;
-
-
-                if ($hvts[j].status == "active") {             
-                    if (getSq($plts[i].currentRow+$plts[i].currentCol) == $hvts[j].loc){  
-                        //capture or false alarm                        
-                        //current hvt is "j"
-
-                        var $capture = 1;
-                        var $hvtType = "HVT ";
-
-
-                        if ($capture > 0) {
-                            $hvts[j].status = "captured";
-
-
-                            if ($hvts[j].type == "low") {
-                                $plts[i].points = $lvtPoints;
-
-                            } else if ($hvts[j].type == "high") {
-                                if ($frame == "+"){
-                                    $plts[i].points = $hvtPoints;
-                                    
-                                }
-                                console.log($frame)
-                                
-                            }
-                            console.log($plts[i])
-                            $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
-                            var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
-                            data2 += "," + JSON.stringify(tempdataobj);    
-                        }
-                        else {
-                            $hvts[j].status = "lost";
-                            if ($hvts[j].type == "high"){
-                                if ($frame == "-"){
-                                    $plts[i].points = $hvtPoints;
-                                }
-                            }
-                            $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
-                            var tempdataobj = {time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j};
-                            data2 += "," + JSON.stringify(tempdataobj); 
-                        }
-                        if ($plts[i].status == "moving") {
-                            $score = stopPlt($plts,i,$score,$maxScore);
-                        }
-                        $plts[i].status = "returning";
-                        var $goalSq = parseInt($plts[i].homeSq.substr(3)) + 1;
-                        $plts[i].goalRow = getCoords($goalSq).substr(0,1);
-                        $plts[i].goalCol = parseInt(getCoords($goalSq).substr(1));
-                        $plts[i].lastMoveTime = $elapsedTime;
-                        $('#plt' + (i+1)).fadeOut(0);
-                        startPlt($plts,i);
-                        myintro.nextStep();
-                        break
-                    }
-                } 
-            }
-        }
-    }, 100)};
+    var ntargets = 1;
+    
 
     //create tutorial hvts
     $hvts[0] = new target(74,1);
     $hvts[0].status = 'active';
     $hvts[0].type = 'high';
 
-    tutorialtimer();
+    tutorialtimer(ntargets);
     //remove clock (change this?)
     document.getElementById("time").style.display = "none";
     //create hard-coded tutorial intel
     $('#intel1').append('<p id="tutorialintel">HVT1 sighted at F5</p>');
 
     var sq74clicked = false;
-    var myintro = introJs();
+    myintro = introJs();
         
     myintro.onafterchange(function(targetElement) {
         
@@ -212,7 +100,8 @@ function startTutorial($frame) {
 
     }).onexit(function() {
         clearInterval(myvar);
-        startPractice($frame);
+        startPractice();
+        
 }).setOptions({
             keyboardNavigation: false,
             exitOnOverlayClick: false,
@@ -296,7 +185,7 @@ function startTutorial($frame) {
             element: document.querySelector('.card__image'),
             intro: "Great! Now let's practice"
           }]
-        }).start().goToStep(16);
+        }).start().goToStep(17);
 //        .goToStep(14); 
     
     }
