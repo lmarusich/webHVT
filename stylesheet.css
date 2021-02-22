@@ -567,5 +567,12 @@ h4 {
     
 }
 
+.introjs-tooltip-header {
+    display: none;
+}
+
+.introjs-tooltipbuttons {
+    padding: 5px 10px !important;
+}
 
 

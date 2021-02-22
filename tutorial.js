@@ -107,8 +107,7 @@ function startTutorial($frame) {
             showBullets: false,
             steps: [
               { 
-                title: 'Welcome!',
-                intro: 'Your task is to find and capture targets that have been spotted in the area.'
+                intro: '<p>Welcome!</p>Your task is to find and capture targets that have been spotted in the area.'
               },
                   
               {
