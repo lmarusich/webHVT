@@ -24,11 +24,15 @@ function startTutorial($frame) {
     myintro.onafterchange(function(targetElement) {
         
         switch(targetElement.id) {
-            case "scorePanel":
-                $li1 = $("#cbPanel>ul>li").first();
-                if (!($li1.children('span').html().charCodeAt(0) == 10004 & $li1.children('span').hasClass('show'))){
-                    myintro.previousStep();
+            case "":
+                console.log(this._currentStep)
+                if (this._currentStep == 12){
+                    $li1 = $("#cbPanel>ul>li").first();
+                    if (!($li1.children('span').html().charCodeAt(0) == 10004 & $li1.children('span').hasClass('show'))){
+                        myintro.previousStep();
+                    }
                 }
+                
                 break;
             case "tutorialintel":
                 $('#tutorialintel').css('visibility','visible'); 
@@ -106,84 +110,86 @@ function startTutorial($frame) {
             exitOnOverlayClick: false,
             showBullets: false,
             steps: [
-              { 
+              { //0
                 intro: '<p>Welcome!</p>Your task is to find and capture targets that have been spotted in the area.'
               },
                   
-              {
+              { //1
                 element: document.querySelector('#mapcontainer'),
                 intro: 'This is the map'
               },
-            {
+            {   //2
                 element: document.querySelector('#intelPanel'),
                 intro: 'This is where you get intel...'
             },
-            {
+            {   //3
                 element: document.querySelector('#tutorialintel'),
                 intro: 'A potential target has been seen at F5'
             },
-            {
+            {   //4
                 element: document.querySelector('#sq90'),
                 intro: 'This is one of four units you can assign to capture targets.<br>Click on it!'
             },
-            {
+            {   //5
                 element: document.querySelector('#sq74'),
                 intro: 'Click on the map at F5 to send this unit to capture the target seen there.',
                 position: 'right'
             },
                   
-            {
+            {   //6
                 element: document.querySelector('#mapPanel'),
                 intro: "The yellow arrow shows the path your unit is taking to the assigned location.<br>Be patient!"
             },
-            {
+            {   //7
                 element: document.querySelector('#mapPanel'),
                 intro: "If your unit encounters a potential target, it will automatically capture it and return to the central base location",
                 position: 'right'
                                        
             },
-            {
+            {   //8
                 element: document.querySelector('#capturePanel'),
                 intro: 'Here is where you see if you captured a target, or if it was a false alarm...'
             },
-            {
+            {   //11
+                element: document.querySelector('#scorePanel'),
+                intro: 'Your total score will appear here'
+            },
+            {   //9
                 element: document.querySelector('#cbPanel'),
                 intro: 'Stay organized! Mark whether you captured or missed each target...'
             },
-            {
+            {   //10
                 element: document.querySelector('li'),
                 intro: 'Mark this target as captured',
                 position: 'left'
             },
-            {
-                element: document.querySelector('#scorePanel'),
-                intro: 'Your total score will appear here'
+
+            {   //12
+                title: 'Great job!',
+                element: document.querySelector('.card__image'),
+                intro: 'Here are a few more tips.'
             },
-            {
-            title: 'Great job!',
-            element: document.querySelector('.card__image'),
-            intro: 'Here are a few more tips.'
-          },
-          {
+            {   //13
                 element: document.querySelector('#status'),
                 intro: "You can stop a unit as it's traveling if you need to reassign it.",
-              position: 'right'
+                position: 'right'
             },
-          {
+            {   //14
                 element: document.querySelector('#sq74'),
                 intro: 'The potential target is 50% likely to be at the location indicated by the intelligence report',
-              position:'top'
-              },
-                    {
+                position:'top'
+            },
+            {   //15
                 element: document.querySelector('#littleoverlay'),
                 intro: 'If not, it will be in one of the immediately surrounding squares</p>',
-              position:'top'
-              },
-            {
-            element: document.querySelector('.card__image'),
-            intro: "Great! Now let's practice"
-          }]
-        }).start();
+                position:'top'
+            },
+            {   //16
+                element: document.querySelector('.card__image'),
+                intro: "Great! Now let's practice"
+            }]
+        }).start().goToStep(15);
+        //.goToStep(0);
 //        .goToStep(14); 
     
     }

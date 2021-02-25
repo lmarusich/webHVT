@@ -177,6 +177,12 @@ function stopPlt(platoon,$score,$maxScore,ntargets) {
             $('#captureTB').append('<p>' + platoon.msg + '</p>');
             platoon.msg = "";
             $targetsdone++;
+            
+            //move through 2nd tutorial/practice steps
+            if ($phase == "practice2"){
+            myintro2.nextStep();
+            
+        }
         }
         
         if (platoon.points > 0) {
@@ -202,11 +208,6 @@ function stopPlt(platoon,$score,$maxScore,ntargets) {
             }
         }
         
-        //move through 2nd tutorial/practice steps
-        if ($phase == "practice2"){
-            myintro2.nextStep();
-            
-        }
         
         //need to end the game here if all targets have been found or missed
         if ($targetsdone >= ntargets){
@@ -328,7 +329,7 @@ function changeHeight() {
 
     var $mapRight2 = $('#mapPanel').offset().left + $totalWidth;
     var $mapBottom = $('#mapPanel').offset().top + $totalWidth;
-    $('#scorePanel2').css('left',$mapRight2 - parseInt($('#scorePanel2').css('width')) - 6);
+    //$('#scorePanel2').css('left',$mapRight2 - parseInt($('#scorePanel2').css('width')) - 6);
     $('#cbPanel').css('left',$('#intelPanel').position().left);
     $('#cbPanel').css('width',$('#intelPanel').css('width'));
     $('#assignUnit').css('margin-left',$('#mapPanel').position().left-7);
@@ -341,11 +342,19 @@ function changeHeight() {
     $('#scorePanel').css('height',$('#capturePanel').css('height'));
     $('#scorePanel').css('left',parseInt($('#capturePanel').css('left'))+parseInt($('#capturePanel').css('width')) + 6 + 4);
     
+    
+    //something here like if (phase != 'test')
     //position the hidden tutorial div for the map
     $('#littleoverlay').css('top', $('#sq59').offset().top);
     $('#littleoverlay').css('left', $('#sq59').offset().left);
     $('#littleoverlay').css('width', parseInt($('.mapSquare').css('width')) * 3 + 4);
     $('#littleoverlay').css('height', parseInt($('.mapSquare').css('width')) * 3 + 4);
+    
+    //position the hidden intel + score div for practice2
+    $('#littleoverlay2').css('top', $('#capturePanel').offset().top);
+    $('#littleoverlay2').css('left', $('#capturePanel').offset().left);
+    $('#littleoverlay2').css('width', $('#capturePanel').width()* 2 + 16);
+    $('#littleoverlay2').css('height', $('#capturePanel').height() + 6);
                             
     
 }
@@ -441,6 +450,12 @@ function movePlatoon(platoon,ntargets){
     }
 
     if ((platoon.currentRow == platoon.goalRow) && (platoon.currentCol == platoon.goalCol)){
+        
+        if (platoon.status == "returning" && $phase == "tutorial"){
+             $('.introjs-tooltipbuttons').css('visibility','visible');
+            myintro.nextStep()
+        }
+        
         $score = stopPlt(platoon,$score,$maxScore,ntargets);
     }
 }
@@ -532,6 +547,7 @@ function getReportedSquare(targ,intel){
     //if 1, 50%, 50%
     //if 4, only surrounding squares
     //if 5, widen to 25 squares
+    //if 99, pick the top left square (this is just for the current practice setup)
 
     //get possible surrounding squares
     //get 8 surrounding squares (less if near edge) + indicated square (9 possibilites)
@@ -578,6 +594,10 @@ function getReportedSquare(targ,intel){
           //pick one of the surrounding squares randomly
           var $randNum = Math.floor(Math.random() * $possibleSqs.length);
           $reportedSq = $possibleSqs[$randNum];
+            break;
+        case 99:
+            //pick top left
+            $reportedSq = $possibleSqs[0];
             break;
         case 5:
             //get 25 surrounding squares (less if near edge)
@@ -646,6 +666,13 @@ function testtimer(ntargets,phase) {
         
         $elapsedTime = timer($elapsedTime);
         //check if any platoons are moving
+        
+        if ($phase == "practice"){
+            //do a check to see if they need a hint?
+            if ($elapsedTime - $hvts[1].startTime == 18){
+                $('#intel1').append('<p style="color:red;">HINT: if the target is not in the indicated location, look in the 8 surrounding squares</p>');
+            }
+        }
 
         for (i=0; i<$plts.length; i++) {
             if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
@@ -686,56 +713,57 @@ function testtimer(ntargets,phase) {
 
 function tutorialtimer(ntargets) {
         
-        console.log(ntargets);
         myvar = setInterval(function() {
         
         $elapsedTime = timer($elapsedTime);
+        
         //check if any platoons are moving
         for (i=0; i<$plts.length; i++) {
             if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
                 if ($elapsedTime >= $plts[i].lastMoveTime + 3){
                     //move the platoon (update current row and current col)
-                    $plts[i].lastMoveTime = $elapsedTime;
-
-                    if ($plts[i].xfirst) {
-                        if ($plts[i].currentCol != $plts[i].goalCol) {
-                            if ($plts[i].goalCol < $plts[i].currentCol) {$plts[i].currentCol--;}
-                            else {$plts[i].currentCol++;}   
-                        }
-                        else if ($plts[i].currentRow != $plts[i].goalRow){
-                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-                            }
-                            else {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-                            } 
-                        }
-                    }
-
-                    else {
-                        if ($plts[i].currentRow != $plts[i].goalRow){
-                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-                            }
-                            else {
-                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-                            } 
-                        }
-                        else if ($plts[i].currentCol != $plts[i].goalCol) {
-                            if ($plts[i].goalCol < $plts[i].currentCol) { $plts[i].currentCol--;}
-                            else {$plts[i].currentCol++;}                        
-                        }
-                    }
-
-                    if (($plts[i].currentRow == $plts[i].goalRow) && ($plts[i].currentCol == $plts[i].goalCol)){
-                        if ($plts[i].status == "returning" && $phase == "tutorial"){
-                             $('.introjs-tooltipbuttons').css('visibility','visible');
-                            myintro.nextStep()
-                        }
-
-                        $score = stopPlt($plts[i],$score,$maxScore,ntargets);
-
-                    }
+                    movePlatoon($plts[i],ntargets);
+//                    $plts[i].lastMoveTime = $elapsedTime;
+//
+//                    if ($plts[i].xfirst) {
+//                        if ($plts[i].currentCol != $plts[i].goalCol) {
+//                            if ($plts[i].goalCol < $plts[i].currentCol) {$plts[i].currentCol--;}
+//                            else {$plts[i].currentCol++;}   
+//                        }
+//                        else if ($plts[i].currentRow != $plts[i].goalRow){
+//                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
+//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
+//                            }
+//                            else {
+//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
+//                            } 
+//                        }
+//                    }
+//
+//                    else {
+//                        if ($plts[i].currentRow != $plts[i].goalRow){
+//                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
+//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
+//                            }
+//                            else {
+//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
+//                            } 
+//                        }
+//                        else if ($plts[i].currentCol != $plts[i].goalCol) {
+//                            if ($plts[i].goalCol < $plts[i].currentCol) { $plts[i].currentCol--;}
+//                            else {$plts[i].currentCol++;}                        
+//                        }
+//                    }
+//
+//                    if (($plts[i].currentRow == $plts[i].goalRow) && ($plts[i].currentCol == $plts[i].goalCol)){
+//                        if ($plts[i].status == "returning" && $phase == "tutorial"){
+//                             $('.introjs-tooltipbuttons').css('visibility','visible');
+//                            myintro.nextStep()
+//                        }
+//
+//                        $score = stopPlt($plts[i],$score,$maxScore,ntargets);
+//
+//                    }
                 }
             }
 
@@ -813,6 +841,6 @@ function tutorialtimer(ntargets) {
             }
             }
         }
-    }, 1000)};
+    }, 100)};
 
 

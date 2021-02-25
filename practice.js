@@ -27,7 +27,7 @@ gainstext = [
 
 losstext = [
     'Great job!',
-    'There will be a number of <b>HIGH</b> value targets (HVTs) escaping the area that you can find and capture. An excaped HVT subtracts 2 points from your score.',
+    'There will be a number of <b>HIGH</b> value targets (HVTs) escaping the area that you can find and capture. An escaped HVT subtracts 2 points from your score.',
     'One intel source provides unreliable information about the location of HVTs.',
     'If you capture an HVT, you will not lose any points (-0), but there is a risk of false alarms, where you will lose two (-2) points.',
     'The other intel source provides very reliable information about the location of LOW value targets (LVTs).',
@@ -60,7 +60,7 @@ function startPractice() {
     //create practice hvts
     var $practicelocs  = [30, 49, 125, 150]
     //quick hvts
-    var $practicelocs  = [88,77,76,77];
+    var $practicelocs  = [88,146,76,77];
     
     //make array of 4 targets
     for (i=0; i<4; i++){    
@@ -71,9 +71,8 @@ function startPractice() {
     
     //make array of 1 intel group for practice
     for (i=0; i<1; i++){
-        $intels[i] = new Intel(i,[3,4],'high');
+        $intels[i] = new Intel(i,[3,99],'high');
     }
-    
     
     testtimer(ntargets,"practice");
     
@@ -124,7 +123,6 @@ function tutorial2(){
     myintro2 = introJs();
            
     myintro2.onafterchange(function(targetElement){
-        console.log(this._currentStep);
         if (targetElement.id == 'intel' + whichHigh && this._currentStep == 3){
             $('#intel' + whichHigh + '>H4').html($('#intel' + whichHigh + '>H4').html() + headingtext[0]);
         } else if (targetElement.id == 'intel' + whichLow && this._currentStep == 5){
@@ -140,20 +138,24 @@ function tutorial2(){
             
         } else if (this._currentStep == 8){
             //enable buttons?
-            $('.introjs-tooltipbuttons').css('visibility','hidden');   
+            $('.introjs-tooltipbuttons').css('visibility','hidden');
+            //only enable appropriate button
             $('p.hvtinfo button').prop('disabled', false);
-            tutorialtimer(ntargets,myintro2);
+            tutorialtimer(ntargets);
             
         }else if (targetElement.id == 'mapcontainer'){           
             //$('.introjs-tooltipbuttons').css('visibility','hidden');          
-        }else if (targetElement.id == 'capturePanel'){           
+        }else if (targetElement.id == 'littleoverlay2'){           
             $('.introjs-tooltipbuttons').css('visibility','visible');          
         } else if (this._currentStep == 12 || this._currentStep == 15 || this._currentStep == 18){
-            $('.introjs-tooltipbuttons').css('visibility','hidden');   
-            $('p.hvtinfo button').prop('disabled', false);
-            if (this._currentStep == 15){
+            $('.introjs-tooltipbuttons').css('visibility','hidden');    
+            if (this._currentStep == 12){
+                $('#info1 button').prop('disabled', false);
+            } else if (this._currentStep == 15){
+                $('#info2 button').prop('disabled', false);
                 $('p.hvtinfo#info2').css('visibility','visible');
             } else if (this._currentStep == 18){
+                $('#info3 button').prop('disabled', false);
                 $('p.hvtinfo#info3').css('visibility','visible');
             }
         }
@@ -202,7 +204,7 @@ function tutorial2(){
                 intro: introtext[9]
           },
                 {
-                element: document.querySelector('#capturePanel'),
+                element: document.querySelector('#littleoverlay2'),
                 intro: introtext[10]      
           },
         {
@@ -218,7 +220,7 @@ function tutorial2(){
                 intro: introtext[13]
           },
                 {
-                element: document.querySelector('#capturePanel'),
+                element: document.querySelector('#littleoverlay2'),
                 intro: introtext[14]
                 
           },
@@ -231,7 +233,7 @@ function tutorial2(){
                 intro: introtext[16]
           },
                 {
-                element: document.querySelector('#capturePanel'),
+                element: document.querySelector('#littleoverlay2'),
                 intro: introtext[17] 
           },
             
@@ -244,7 +246,7 @@ function tutorial2(){
                 intro: introtext[19]
           },
                 {
-                element: document.querySelector('#capturePanel'),
+                element: document.querySelector('#littleoverlay2'),
                 intro: introtext[20]
                 
           }]

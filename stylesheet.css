@@ -9,8 +9,13 @@ header {
 
 #littleoverlay {
   position: absolute; /* Sit on top of the page content */
-  display: block; /* Hidden by default */
-    
+  display: block; /* Hidden by default */  
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+}
+
+#littleoverlay2 {
+  position: absolute; /* Sit on top of the page content */
+  display: block; /* Hidden by default */  
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
 }
 
