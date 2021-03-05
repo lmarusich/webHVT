@@ -1,8 +1,14 @@
 //define variables
 
 //start tutorial
-
 //start test
+
+//tutorial1
+//practice1
+//tutorial2/practice2
+//bigpractice
+//test
+//test2?
 
 //test variables
 var $phase = "tutorial";
@@ -99,13 +105,15 @@ $(document).ready(function(){
         $('#cbPanel ul').append('<li><span>&#10004</span><button class="hvtCB">Target ' + (i + 1) + '&nbsp&#9660</button><div class = "dropdowncontent"><a href = "#" class = "p-active disabled">Active</a><a href = "#" class = "p-captured">Captured</a><a href = "#" class = "p-missed">Missed</a></div></li>'); 
     }
     
-    $('#cbPanel button').on('click',function() {
+    
+    $(document).on('click','#cbPanel button',function(){
         $(this).parent().find('.dropdowncontent').toggleClass('show');
     });
     
     
     //change appearance when a dropdown item is selected
-    $('#cbPanel a').on('click', function() {
+    //$('#cbPanel a').on('click', function() {
+    $(document).on('click','#cbPanel a',function(){
         //if clicked on "captured" add a checkbox
         if ($(this).hasClass('p-captured')){
             $(this).parent().parent().children('span').html('&#10004');
@@ -202,6 +210,7 @@ $(document).ready(function(){
         }
     });
     
+    //need to check if the below is still needed
     $('input[type=checkbox]').on('click',function() {
         if ($(this).attr('name') == 'hvtCB'){
             $(this).parent().toggleClass('checked');
@@ -215,10 +224,7 @@ $(document).ready(function(){
         $score = stopPlt($plts[whichPlt],whichPlt,$score,$maxScore);
     });
     
-    var myVar;
-
-
-    
+        
     //startTutorial;
     //don't show timer
     

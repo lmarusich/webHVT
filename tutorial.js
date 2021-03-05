@@ -188,7 +188,7 @@ function startTutorial($frame) {
                 element: document.querySelector('.card__image'),
                 intro: "Great! Now let's practice"
             }]
-        }).start().goToStep(15);
+        }).start().goToStep(17);
         //.goToStep(0);
 //        .goToStep(14); 
     

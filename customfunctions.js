@@ -71,13 +71,25 @@ function resetAll($frame, ntargets){
     //remove text from textboxes
     $('#captureTB').empty();
     $('#intel1>p').remove();
+    $('#intel2>p').remove();
     
-    //uncheck any checkboxes
-    $('li>span').removeClass('show');
-    $('.dropdowncontent').children().removeClass('disabled');
-    $('.p-active').addClass('disabled');
+    //make checkboxes
+    $('#cbPanel ul').empty();
+    for (i=0; i<ntargets; i++){
+       // $('#cbPanel ul').append('<li><input type="checkbox" name="hvtCB">HVT' + (i+1) + '</li>');
+
+        $('#cbPanel ul').append('<li><span>&#10004</span><button class="hvtCB">Target ' + (i + 1) + '&nbsp&#9660</button><div class = "dropdowncontent"><a href = "#" class = "p-active disabled">Active</a><a href = "#" class = "p-captured">Captured</a><a href = "#" class = "p-missed">Missed</a></div></li>'); 
+    }
+    
+//    //uncheck any checkboxes
+//    $('li>span').removeClass('show');
+//    $('.dropdowncontent').children().removeClass('disabled');
+//    $('.p-active').addClass('disabled');
     
     $('#littleoverlay').remove();
+    if ($phase == "bigpractice"){
+        $('#littleoverlay2').remove();
+    }
     
     
 }
@@ -166,7 +178,7 @@ function startPlt($plts,$index) {
 function stopPlt(platoon,$score,$maxScore,ntargets) {
     
     var $index = $plts.indexOf(platoon);
-    console.log(platoon.currentRow + platoon.currentCol)
+    
     var $currSq = getSq(platoon.currentRow + platoon.currentCol);
     var $status = "stopped";
     var $title  = ": Stopped";
@@ -406,6 +418,14 @@ function endGame() {
                 tutorial2();
             },3000);
 
+        } else if ($phase == "practice2"){
+            timerdone = true;
+            clearInterval(myvar);
+//            console.log("practice2 over?");
+//            setTimeout(function(){
+//                startBigPractice();
+//            },3000);
+
         }
         
     }
@@ -470,7 +490,7 @@ function checkCaptures(platoon, ntargets,phase){
                 var $capture = -1;
                 var $hvtType = "HVT ";
                 
-                if (phase = "practice"){
+                if (phase == "practice"){
                     $capture = 1;
                 } else {
                     if ($hvts[j].type == "low") {
@@ -531,14 +551,19 @@ function checkCaptures(platoon, ntargets,phase){
 }
 
 function getReportedSquare(targ,intel){
-    
+    console.log(intel);
+    console.log(intel.acc);
     var $reportedSq = getCoords(targ.loc + 1)               
     var $targRow = $reportedSq.substr(0,1).charCodeAt(0) - letter;
     var $targCol = parseInt($reportedSq.substr(1)) - 1;
 
     //figure out how to make this a different value for each target if needed (for practice)
     //var $accuracy = $srcAccuracy[j];
-    var $accuracy = intel.acc[i];
+    var $accuracy = intel.acc;
+    if ($phase == "practice"){
+        $accuracy = intel.acc[i];
+    }
+    
     var $possibleSqs = [];
 
     //need to figure out accuracy values
@@ -566,6 +591,8 @@ function getReportedSquare(targ,intel){
             }
         }
     }
+    
+    console.log($accuracy);
 
     switch($accuracy) {
 
@@ -707,7 +734,7 @@ function testtimer(ntargets,phase) {
 
         
 
-    }, 1000);
+    }, 100);
 }
 
 
@@ -805,7 +832,7 @@ function tutorialtimer(ntargets) {
                                 console.log($frame)
                                 
                             }
-                            console.log($plts[i])
+                            
                             $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
                             var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
                             data2 += "," + JSON.stringify(tempdataobj);    

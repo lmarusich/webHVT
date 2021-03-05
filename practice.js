@@ -22,7 +22,8 @@ gainstext = [
      'You earned 1 point for capturing this LVT.',
       'Choose the LVT again',
        'Assign a unit to capture this LVT',
-       'You earned 1 point for capturing this LVT.'
+       'You earned 1 point for capturing this LVT.',
+    "Great! Now let's do one more practice run all on your own."
 ]
 
 losstext = [
@@ -46,7 +47,8 @@ losstext = [
      'You only lost 1 point because you captured an LVT.',
       'Choose the LVT again',
        'Assign a unit to capture this LVT',
-       'You only lost 1 point because you captured an LVT.'
+       'You only lost 1 point because you captured an LVT.',
+    "Great! Now let's do one more practice run all on your own."
 ]
 
 function startPractice() {
@@ -79,8 +81,6 @@ function startPractice() {
 }
 
 function tutorial2(){
-    
-    console.log('starting tutorial2???');
     
     $phase = 'practice2';
     
@@ -124,9 +124,15 @@ function tutorial2(){
            
     myintro2.onafterchange(function(targetElement){
         if (targetElement.id == 'intel' + whichHigh && this._currentStep == 3){
-            $('#intel' + whichHigh + '>H4').html($('#intel' + whichHigh + '>H4').html() + headingtext[0]);
+            if ($('#intel' + whichHigh + '>H4').html().length < 12){
+                $('#intel' + whichHigh + '>H4').html($('#intel' + whichHigh + '>H4').html() + headingtext[0]);
+            }
+            
         } else if (targetElement.id == 'intel' + whichLow && this._currentStep == 5){
-           $('#intel' + whichLow + '>H4').html($('#intel' + whichLow + '>H4').html() + headingtext[1]);
+            if ($('#intel' + whichLow + '>H4').html().length < 12){
+                    $('#intel' + whichLow + '>H4').html($('#intel' + whichLow + '>H4').html() + headingtext[1]);
+            }
+           
         } else if (targetElement.id == 'intelPanel'){
             //disable buttons?
             if (this._currentStep == 7){
@@ -163,7 +169,7 @@ function tutorial2(){
         
     }).onexit(function() {
 //        clearInterval(myvar);
-//        startPractice($frame);
+        startBigPractice();
         console.log('2nd tutorial over');
 }).setOptions({
             keyboardNavigation: false,
@@ -173,57 +179,18 @@ function tutorial2(){
                 {intro: introtext[0]},
                 {title: 'More Info', intro: introtext[1]},
                 {element: document.querySelector('#intel' + whichHigh), intro: introtext[2]},
-            {
-                element: document.querySelector('#intel' + whichHigh),
-                intro: introtext[3]
-            },
-            {
-                element: document.querySelector('#intel' + whichLow),
-                intro: introtext[4]
-            },
-            {
-                element: document.querySelector('#intel' + whichLow),
-                intro: introtext[5]
-            },
-            
-            {
-            
-            //element: document.querySelector('.card__image'),
-            intro: introtext[6]
-            },
-                {
-                element: document.querySelector('#intelPanel'),
-                intro: introtext[7]
-          },
-            {
-                element: document.querySelector('#intel' + whichHigh + ' #info0'),
-                intro: introtext[8]
-          },
-            {
-                element: document.querySelector('#mapcontainer'),
-                intro: introtext[9]
-          },
-                {
-                element: document.querySelector('#littleoverlay2'),
-                intro: introtext[10]      
-          },
-        {
-                element: document.querySelector('#intelPanel'),
-                intro: introtext[11]
-          },
-            {
-                element: document.querySelector('#intel' + whichHigh + ' #info1'),
-                intro: introtext[12]
-          },
-                {
-                element: document.querySelector('#mapcontainer'),
-                intro: introtext[13]
-          },
-                {
-                element: document.querySelector('#littleoverlay2'),
-                intro: introtext[14]
-                
-          },
+                {element: document.querySelector('#intel' + whichHigh), intro: introtext[3]},
+                {element: document.querySelector('#intel' + whichLow),  intro: introtext[4]},
+                {element: document.querySelector('#intel' + whichLow), intro: introtext[5]},        
+                {intro: introtext[6]},
+                {element: document.querySelector('#intelPanel'),intro: introtext[7]},
+                {element: document.querySelector('#intel' + whichHigh + ' #info0'),intro: introtext[8]},
+                {element: document.querySelector('#mapcontainer'),intro: introtext[9]},
+                {element: document.querySelector('#littleoverlay2'),intro: introtext[10]},
+                {element: document.querySelector('#intelPanel'),intro: introtext[11]},
+                {element: document.querySelector('#intel' + whichHigh + ' #info1'),intro: introtext[12]},
+                {element: document.querySelector('#mapcontainer'),intro: introtext[13]},
+                {element: document.querySelector('#littleoverlay2'),intro: introtext[14]},
             {
                 element: document.querySelector('#intel' + whichLow + ' #info2'),
                 intro: introtext[15]
@@ -249,9 +216,47 @@ function tutorial2(){
                 element: document.querySelector('#littleoverlay2'),
                 intro: introtext[20]
                 
-          }]
-        }).start();
+          },
+           {intro: introtext[21]} 
+            ]
+        }).start().goToStep(21);
         //.goToStep(8);
     
     }
+
+function startBigPractice(){
+    
+    $phase = "bigpractice"
+    var ntargets = 4;
+    
+    //reset from tutorial
+    resetAll($frame, ntargets);
+    
+    //show clock
+    document.getElementById("time").style.display = "block";
+    
+    //make targets for real (randomized locations)
+    for (i=0; i<ntargets; i++){
+        var $temploc = Math.floor(Math.random() * 196);
+        var $excluded = [75,76,77,78,89,90,91,92,103,104,105,106,117,118,119,120];
+        if (i > 0) {$excluded.push($hvts[i-1].loc);} //prevent 2 hvts at same loc in a row
+        while ($excluded.indexOf($temploc) != -1){
+            $temploc = Math.floor(Math.random() * 196);
+        }
+        var $temptime = i*hvtInterval + $startTime;
+        $hvts[i] = new target($temploc,$temptime);
+    }
+    
+    //write data with these hvt locations?
+    
+    //make intel for real (order of boxes should match what's already been shown)
+    for (i=0; i<2; i++){
+        //accuracy going to be category 1 (50% reported square, 50% surround)
+        $intels[i] = new Intel(i,1,$srcRisk[i]);
+    }
+    
+    testtimer(ntargets,"bigpractice");
+    
+    
+}
        
