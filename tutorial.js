@@ -5,6 +5,12 @@ function startTutorial($frame) {
     
     $phase = "tutorial";
     
+    if ($fasttrack1){
+        $gotostep = 17;
+    } else {
+        $gotostep = 1
+    }
+    
     var ntargets = 1;
     
     //create tutorial hvts
@@ -188,7 +194,7 @@ function startTutorial($frame) {
                 element: document.querySelector('.card__image'),
                 intro: "Great! Now let's practice"
             }]
-        }).start().goToStep(17);
+        }).start().goToStep($gotostep);
         //.goToStep(0);
 //        .goToStep(14); 
     

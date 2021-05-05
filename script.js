@@ -12,8 +12,14 @@
 
 //test variables
 var $phase = "tutorial";
+var $timepressure = false;
 var $frame = "+";
-var $nHvts = 5;
+var $fasttrack1 = false;
+var $fasttrack2 = false;
+//timelimit 10 min?
+var $timelimit = 10 * 60;
+var $outoftime = false;
+var $nHvts = 15;
 var $startTime = 5;
 var hvtInterval = 5;
 var $elapsedTime = 0;
@@ -46,6 +52,18 @@ $(document).ready(function(){
         } else {
             $frame = "-";
             $score = $maxScore;
+        }
+        
+        if(document.getElementById("fasttrack1").checked){
+            $fasttrack1 = true;
+        }
+        
+        if(document.getElementById("fasttrack2").checked){
+            $fasttrack2 = true;
+        }
+        
+        if(document.getElementById("timepressure").checked){
+            $timepressure = true;
         }
         
         //reset progress bar text and height
@@ -222,6 +240,20 @@ $(document).ready(function(){
         var tempdataobj = {time: $elapsedTime, type: "stopunit", unit: whichPlt, currentSq: $plts[whichPlt].currentRow + $plts[whichPlt].currentCol};
         data2 += "," + JSON.stringify(tempdataobj);
         $score = stopPlt($plts[whichPlt],whichPlt,$score,$maxScore);
+    });
+    
+    //define pause button
+    $('#pause').on('click',function() {
+        $isPaused = true;
+        //add a data event here that the game was paused
+        document.getElementById("overlay").style.display = "block";
+    });
+    
+    //define resume button
+    $('#resume').on('click',function() {
+        $isPaused = false;
+        //add a data event here that the game was resumed
+        document.getElementById("overlay").style.display = "none";
     });
     
         

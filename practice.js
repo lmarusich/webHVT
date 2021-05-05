@@ -1,55 +1,63 @@
 gainsheading = [': HVTs (+2/+0)', ': LVTs (+1)'];
 lossheading = [': HVTs (-2/-0)', ': LVTs (-1)'];
 
-gainstext = [
+generictext = [
     'Great job!',
-    'There will be a number of <b>HIGH</b> value targets (HVTs) in the area that you can find and capture. Capturing an HVT adds 2 points to your score.',
+    [
+        'There will be a number of <b>HIGH</b> value targets (HVTs) in the area that you can find and capture. Capturing an HVT adds 2 points to your score.',
+        'There will be a number of <b>HIGH</b> value targets (HVTs) escaping the area that you can find and capture. An escaped HVT subtracts 2 points from your score.'
+    ],
     'One intel source provides unreliable information about the location of HVTs.',
-    'Capturing an HVT is worth two (+2) points, but there is a risk of false alarms, where you will earn no (+0) points.',
+    [
+        'Capturing an HVT is worth two (+2) points, but there is a risk of false alarms, where you will earn no (+0) points.',
+        'If you capture an HVT, you will not lose any points (-0), but there is a risk of false alarms, where you will lose two (-2) points.'
+    ],
     'The other intel source provides very reliable information about the location of LOW value targets (LVTs).',
-    'Instead of an HVT, you can choose to capture an LVT, which is worth 1 point.',
-     "Let's practice choosing between the two sources of intel",
-     'You are able to choose to see location information about an HVT or an LVT',
-     'Click on this button to show information about the HVT',
-     'Assign a unit to capture this HVT',
-    'You earned 2 points for capturing this HVT.',
-     'Now you can make another choice between an HVT and an LVT',
-     'Choose the HVT again',
+    [
+        'Instead of an HVT, you can choose to capture an LVT, which is worth 1 point.',
+        'Instead of an HVT, you can choose to capture an LVT, and only lose one (-1) point.'
+    ],
+    "Let's practice choosing between the two sources of intel",
+    'You are able to choose to see location information about an HVT or an LVT',
+    'Click on this button to show information about the HVT',
     'Assign a unit to capture this HVT',
+    [
+        'You earned 2 points for capturing this HVT.',
+        'You did not lose any points because you captured this HVT.'  
+    ],
+    'Now you can make another choice between an HVT and an LVT',
+    'Choose the HVT again',
+    'Assign a unit to capture this HVT',
+    [
         'You earned 0 points because this turned out to be a false alarm.',
-         'Now choose the LVT',
-       'Assign a unit to capture this LVT',
-     'You earned 1 point for capturing this LVT.',
-      'Choose the LVT again',
-       'Assign a unit to capture this LVT',
-       'You earned 1 point for capturing this LVT.',
+        'You lost 2 points because this turned out to be a false alarm, and the HVT escaped.' 
+    ],
+    'Now choose the LVT',
+    'Assign a unit to capture this LVT',
+    [
+        'You earned 1 point for capturing this LVT.',
+        'You only lost 1 point because you captured an LVT.'
+    ],
+    'Choose the LVT again',
+    'Assign a unit to capture this LVT',
+    [
+        'You earned 1 point for capturing this LVT.',
+        'You only lost 1 point because you captured an LVT.'
+    ],
     "Great! Now let's do one more practice run all on your own."
-]
+];
 
-losstext = [
-    'Great job!',
-    'There will be a number of <b>HIGH</b> value targets (HVTs) escaping the area that you can find and capture. An escaped HVT subtracts 2 points from your score.',
-    'One intel source provides unreliable information about the location of HVTs.',
-    'If you capture an HVT, you will not lose any points (-0), but there is a risk of false alarms, where you will lose two (-2) points.',
-    'The other intel source provides very reliable information about the location of LOW value targets (LVTs).',
-    'Instead of an HVT, you can choose to capture an LVT, and only lose one (-1) point.',
-     "Let's practice choosing between the two sources of intel",
-     'You are able to choose to see location information about an HVT or an LVT',
-     'Click on this button to show information about the HVT',
-     'Assign a unit to capture this HVT',
-    'You did not lose any points because you captured this HVT.',
-     'Now you can make another choice between an HVT and an LVT',
-     'Choose the HVT again',
-    'Assign a unit to capture this HVT',
-        'You lost 2 points because this turned out to be a false alarm, and the HVT escaped.',
-         'Now choose the LVT',
-       'Assign a unit to capture this LVT',
-     'You only lost 1 point because you captured an LVT.',
-      'Choose the LVT again',
-       'Assign a unit to capture this LVT',
-       'You only lost 1 point because you captured an LVT.',
-    "Great! Now let's do one more practice run all on your own."
-]
+gainstext = [];
+losstext = [];
+for (var i = 0; i < generictext.length; i++) {
+    if(Array.isArray(generictext[i])){
+       gainstext[i] = generictext[i][0];
+       losstext[i] = generictext[i][1];
+    } else {
+       gainstext[i] = generictext[i];
+       losstext[i] = generictext[i];
+    }
+} 
 
 function startPractice() {
     
@@ -83,6 +91,13 @@ function startPractice() {
 function tutorial2(){
     
     $phase = 'practice2';
+    
+    if ($fasttrack2){
+        $gotostep = 21;
+    } else {
+        $gotostep = 1
+    }
+    
     
     var introtext = gainstext;
     var headingtext = gainsheading;
@@ -219,7 +234,7 @@ function tutorial2(){
           },
            {intro: introtext[21]} 
             ]
-        }).start().goToStep(21);
+        }).start().goToStep($gotostep);
         //.goToStep(8);
     
     }

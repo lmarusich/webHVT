@@ -389,15 +389,26 @@ function getSq($coords) {
 
 function timer($elapsedTime) {
     $elapsedTime++
-    var $elapsedMinutes = Math.floor($elapsedTime/60);
-    var $elapsedSeconds = $elapsedTime % 60;
-    var $displayTime = ""
-    if ($elapsedSeconds < 10){
-            $displayTime = $elapsedMinutes + ":0" + $elapsedSeconds
-        } else {
-            $displayTime = $elapsedMinutes + ":" + $elapsedSeconds;
+    
+    if ($timepressure){
+        $clockTime = $timelimit - $elapsedTime;
+        if ($clockTime == 0){
+            //ran out of time
+            $outoftime = true;
+            endGame();
+        }
+    } else {
+        $clockTime = $elapsedTime
     }
-    if ($elapsedMinutes < 10){
+    var $clockMinutes = Math.floor($clockTime/60);
+    var $clockSeconds = $clockTime % 60;
+    var $displayTime = ""
+    if ($clockSeconds < 10){
+            $displayTime = $clockMinutes + ":0" + $clockSeconds
+        } else {
+            $displayTime = $clockMinutes + ":" + $clockSeconds;
+    }
+    if ($clockMinutes < 10){
         $displayTime = "0" + $displayTime
     }
     
@@ -426,6 +437,26 @@ function endGame() {
 //                startBigPractice();
 //            },3000);
 
+        } else if ($phase == "bigpractice"){
+            timerdone = true;
+            clearInterval(myvar);
+            console.log('time for the real deal');
+            setTimeout(function(){
+                startRealTest();
+            },3000);
+            
+        } else if ($phase == "test"){
+            timerdone = true;
+            clearInterval(myvar);
+            
+            if ($outoftime){
+                console.log('you ran out of time!');
+            } else {
+                console.log('you did it!')
+            }
+            
+            
+            
         }
         
     }
@@ -434,6 +465,39 @@ function endGame() {
     
     
     //clearInterval(mytimer);
+}
+
+function startRealTest(){
+    $phase = "test"
+    var ntargets = $nHvts;
+    
+    //reset from tutorial
+    resetAll($frame, ntargets);
+    
+    //show clock
+    document.getElementById("time").style.display = "block";
+    
+    //make targets for real (randomized locations)
+    for (i=0; i<ntargets; i++){
+        var $temploc = Math.floor(Math.random() * 196);
+        var $excluded = [75,76,77,78,89,90,91,92,103,104,105,106,117,118,119,120];
+        if (i > 0) {$excluded.push($hvts[i-1].loc);} //prevent 2 hvts at same loc in a row
+        while ($excluded.indexOf($temploc) != -1){
+            $temploc = Math.floor(Math.random() * 196);
+        }
+        var $temptime = i*hvtInterval + $startTime;
+        $hvts[i] = new target($temploc,$temptime);
+    }
+    
+    //write data with these hvt locations?
+    
+    //make intel for real (order of boxes should match what's already been shown)
+    for (i=0; i<2; i++){
+        //accuracy going to be category 1 (50% reported square, 50% surround)
+        $intels[i] = new Intel(i,1,$srcRisk[i]);
+    }
+    
+    testtimer(ntargets,"bigpractice");
 }
 
 function movePlatoon(platoon,ntargets){
