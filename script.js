@@ -56,21 +56,21 @@ $(document).ready(function(){
             $score = $maxScore;
         }
         
-        if(document.getElementById("fasttrack1").checked){
-            $fasttrack1 = true;
-        }
+        // if(document.getElementById("fasttrack1").checked){
+        //     $fasttrack1 = true;
+        // }
         
-        if(document.getElementById("fasttrack2").checked){
-            $fasttrack2 = true;
-        }
+        // if(document.getElementById("fasttrack2").checked){
+        //     $fasttrack2 = true;
+        // }
         
         if(document.getElementById("timepressure").checked){
             $timepressure = true;
         }
 
-        if(document.getElementById("fasttrack4").checked){
-            $timeunits = 100;
-        }
+        // if(document.getElementById("fasttrack4").checked){
+        //     $timeunits = 100;
+        // }
 
   
         
