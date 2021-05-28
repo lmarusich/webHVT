@@ -32,6 +32,9 @@
 //reset everything for each practice and test run
 function resetAll($frame, ntargets){
     
+    //stop all previous platoons?
+
+
     $targetsdone = 0;
     $maxScore = ntargets * 2;
     
@@ -175,7 +178,7 @@ function startPlt($plts,$index) {
     addArrows($index+1,$goal,$curr,$plts[$index].xfirst,$plts[$index].status);          
 }
 
-function stopPlt(platoon,$score,$maxScore,ntargets) {
+function stopPlt(platoon,$score,$maxScore,ntargets,alreadyended) {
     
     var $index = $plts.indexOf(platoon);
     
@@ -222,9 +225,12 @@ function stopPlt(platoon,$score,$maxScore,ntargets) {
         
         
         //need to end the game here if all targets have been found or missed
-        if ($targetsdone >= ntargets){
-                endGame();         
+        if (!alreadyended){
+            if ($targetsdone >= ntargets){
+                endGame(ntargets);         
+            }
         }
+        
     }
     platoon.status = $status;
     
@@ -387,15 +393,20 @@ function getSq($coords) {
     return $sq;
 }
 
-function timer($elapsedTime) {
+function timer($elapsedTime,ntargets) {
     $elapsedTime++
     
     if ($timepressure){
         $clockTime = $timelimit - $elapsedTime;
+        if ($clockTime < 120){
+            $('#time span').css('color','red');
+            $('#time span').css('font-weight', 'bold');
+            $("#time").css("border","3px solid red")
+        }
         if ($clockTime == 0){
             //ran out of time
             $outoftime = true;
-            endGame();
+            endGame(ntargets);
         }
     } else {
         $clockTime = $elapsedTime
@@ -413,11 +424,18 @@ function timer($elapsedTime) {
     }
     
     $('#time span').html($displayTime);
+
     return $elapsedTime;
 }
 
-function endGame() {
-    
+function endGame(ntargets) {
+    console.log('help' + $phase);
+    for (i=0; i<$plts.length; i++) {
+        if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
+            stopPlt($plts[i], 0, $maxScore, ntargets, true)
+        }
+    }
+
     if ($phase != 'tutorial'){
         $('#captureTB').append('<p>Finished!</p>');
         
@@ -440,10 +458,22 @@ function endGame() {
         } else if ($phase == "bigpractice"){
             timerdone = true;
             clearInterval(myvar);
-            console.log('time for the real deal');
-            setTimeout(function(){
-                startRealTest();
-            },3000);
+
+            if ($outoftime){
+                console.log('you ran out of time!');
+                endBigPractice("outoftime")
+                //need a pop up message about this
+            } else {
+                endBigPractice("completed")
+                console.log('you did it!')
+                //here too
+            }
+
+            //console.log('time for the real deal');
+            // setTimeout(function(){
+            //     //put a message here
+            //     startRealTest();
+            // },3000);
             
         } else if ($phase == "test"){
             timerdone = true;
@@ -451,8 +481,10 @@ function endGame() {
             
             if ($outoftime){
                 console.log('you ran out of time!');
+                endRealTest("outoftime");
             } else {
                 console.log('you did it!')
+                endRealTest("completed")
             }
             
             
@@ -461,15 +493,19 @@ function endGame() {
         
     }
     
-    
-    
-    
     //clearInterval(mytimer);
 }
 
 function startRealTest(){
     $phase = "test"
     var ntargets = $nHvts;
+    $('#time span').css('color','black');
+    $('#time span').css('font-weight', 'normal');
+    $("#time").css("border","3px solid black")
+
+    if ($timepressure){
+        $timelimit = ntargets * 60;
+    }
     
     //reset from tutorial
     resetAll($frame, ntargets);
@@ -615,8 +651,8 @@ function checkCaptures(platoon, ntargets,phase){
 }
 
 function getReportedSquare(targ,intel){
-    console.log(intel);
-    console.log(intel.acc);
+    //console.log(intel);
+    //console.log(intel.acc);
     var $reportedSq = getCoords(targ.loc + 1)               
     var $targRow = $reportedSq.substr(0,1).charCodeAt(0) - letter;
     var $targCol = parseInt($reportedSq.substr(1)) - 1;
@@ -755,7 +791,7 @@ function testtimer(ntargets,phase) {
     timerdone = false;
     myvar = setInterval(function() {
         
-        $elapsedTime = timer($elapsedTime);
+        $elapsedTime = timer($elapsedTime,ntargets);
         //check if any platoons are moving
         
         if ($phase == "practice"){
@@ -798,7 +834,7 @@ function testtimer(ntargets,phase) {
 
         
 
-    }, 100);
+    }, $timeunits);
 }
 
 
@@ -806,7 +842,7 @@ function tutorialtimer(ntargets) {
         
         myvar = setInterval(function() {
         
-        $elapsedTime = timer($elapsedTime);
+        $elapsedTime = timer($elapsedTime,ntargets);
         
         //check if any platoons are moving
         for (i=0; i<$plts.length; i++) {
@@ -932,6 +968,6 @@ function tutorialtimer(ntargets) {
             }
             }
         }
-    }, 100)};
+    }, $timeunits)};
 
 

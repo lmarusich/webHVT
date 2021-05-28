@@ -1,27 +1,29 @@
 //define variables
+//configure display
 
 //start tutorial
-//start test
-
-//tutorial1
-//practice1
-//tutorial2/practice2
-//bigpractice
-//test
-//test2?
+//start mini-practice
+//start second tutorial
+//start practice
+//start test block
+//start test block 2?
 
 //test variables
 var $phase = "tutorial";
 var $timepressure = false;
+var $timeunits = 1000;
 var $frame = "+";
 var $fasttrack1 = false;
 var $fasttrack2 = false;
+var $fasttrack2b = false;
+var $fasttrack3 = false;
+var $fasttrack4 = false;
 //timelimit 10 min?
 var $timelimit = 10 * 60;
 var $outoftime = false;
 var $nHvts = 15;
 var $startTime = 5;
-var hvtInterval = 5;
+var hvtInterval = 15; //time between successive targets
 var $elapsedTime = 0;
 var $score = 0;
 var $maxScore = $nHvts * 2;
@@ -65,6 +67,12 @@ $(document).ready(function(){
         if(document.getElementById("timepressure").checked){
             $timepressure = true;
         }
+
+        if(document.getElementById("fasttrack4").checked){
+            $timeunits = 100;
+        }
+
+  
         
         //reset progress bar text and height
         $('#scorePanel h3').html("Score: " + $score + "/" + $maxScore);
@@ -76,8 +84,16 @@ $(document).ready(function(){
         document.getElementById("resume").style.display = "inline";
         //adjust height and location of elements based on window size
         changeHeight();
+        
         //need to disable resizing if tutorial is running?
-        startTutorial($frame);
+        if(document.getElementById("fasttrack3").checked){
+            startRealTest();
+        } else if(document.getElementById("fasttrack2b").checked){
+            startBigPractice();
+        } else {
+            startTutorial($frame);
+        }
+        
         
     });
     
@@ -256,15 +272,6 @@ $(document).ready(function(){
         document.getElementById("overlay").style.display = "none";
     });
     
-        
-    //startTutorial;
-    //don't show timer
-    
-    
-    //$("#intelPanel").toggleClass('divoverlay');
-    //tutorialtimer();
-    
-    //startTest;
    
 });
     

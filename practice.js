@@ -47,6 +47,9 @@ generictext = [
     "Great! Now let's do one more practice run all on your own."
 ];
 
+timertext = "This timer will record how long it takes you to complete the task."
+
+
 gainstext = [];
 losstext = [];
 for (var i = 0; i < generictext.length; i++) {
@@ -104,6 +107,12 @@ function tutorial2(){
     if ($frame == "-"){
         introtext = losstext;
         headingtext = lossheading;
+    }
+
+    console.log($timepressure)
+    if ($timepressure){
+        timertext = "This timer will show how long you have to complete the task. It will turn red when you have 2 minutes left."
+
     }
     
     var ntargets = 4;
@@ -178,7 +187,20 @@ function tutorial2(){
             } else if (this._currentStep == 18){
                 $('#info3 button').prop('disabled', false);
                 $('p.hvtinfo#info3').css('visibility','visible');
+            } 
+        } else if (this._currentStep == 22){
+            //make the timer visible
+            //need to set time first (0 for no time pressure, whatever time limit is for practice)
+            var ntargets = 4;
+            if ($timepressure){
+                $timelimit = ntargets * 60;
             }
+            //reset from tutorial
+            resetAll($frame, ntargets);
+            timer(-1,ntargets)
+            //show clock
+            document.getElementById("time").style.display = "block";
+            console.log('show timer')
         }
         
         
@@ -232,7 +254,10 @@ function tutorial2(){
                 intro: introtext[20]
                 
           },
-           {intro: introtext[21]} 
+           {intro: introtext[21]},
+           {
+               element: document.querySelector('header'),
+               intro: timertext} 
             ]
         }).start().goToStep($gotostep);
         //.goToStep(8);
@@ -243,6 +268,10 @@ function startBigPractice(){
     
     $phase = "bigpractice"
     var ntargets = 4;
+
+    if ($timepressure){
+        $timelimit = ntargets * 60;
+    }
     
     //reset from tutorial
     resetAll($frame, ntargets);
@@ -275,3 +304,55 @@ function startBigPractice(){
     
 }
        
+
+
+    function endBigPractice(endmsg){
+    
+        if (endmsg == "outoftime"){
+            message = "You ran out of time!"
+        } else {
+            message = "You finished the practice!"
+        }
+       
+           
+        myintro3 = introJs();
+               
+        myintro3.onafterchange(function(targetElement){      
+            
+        }).onexit(function() {
+            startRealTest();
+    
+    }).setOptions({
+                keyboardNavigation: false,
+                exitOnOverlayClick: false,
+                showBullets: false,
+                steps: [
+                    {intro: message},
+                    {intro: "Press 'Next' to begin your first real block"}
+    
+                ]
+            }).start();   
+        }
+        
+function endRealTest(endmsg){
+    
+    if (endmsg == "outoftime"){
+        message = "You ran out of time!"
+    } else {
+        message = "You finished!"
+    }
+   
+       
+    myintro4 = introJs();
+           
+    myintro4.onafterchange(function(targetElement){      
+        
+    }).setOptions({
+            keyboardNavigation: false,
+            exitOnOverlayClick: false,
+            showBullets: false,
+            steps: [
+                {intro: message},
+            ]
+        }).start();   
+    }
