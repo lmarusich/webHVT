@@ -429,7 +429,7 @@ function timer($elapsedTime,ntargets) {
 }
 
 function endGame(ntargets) {
-    console.log('help' + $phase);
+    
     for (i=0; i<$plts.length; i++) {
         if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
             stopPlt($plts[i], 0, $maxScore, ntargets, true)
@@ -600,7 +600,7 @@ function checkCaptures(platoon, ntargets,phase){
                     } else if ($hvts[j].type == "high") {
                         //make false alarm 50% likely, then hvt goes away
                         $capture = Math.floor(Math.random() * 2);
-                        console.log('hvt' + j + $capture);  
+                        //console.log('hvt' + j + $capture);  
                     } else {
                         //shouldn't be eligible to be captured
                     }
@@ -692,7 +692,7 @@ function getReportedSquare(targ,intel){
         }
     }
     
-    console.log($accuracy);
+    //console.log($accuracy);
 
     switch($accuracy) {
 
@@ -846,61 +846,25 @@ function tutorialtimer(ntargets) {
         
         //check if any platoons are moving
         for (i=0; i<$plts.length; i++) {
+
             if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
                 if ($elapsedTime >= $plts[i].lastMoveTime + 3){
                     //move the platoon (update current row and current col)
                     movePlatoon($plts[i],ntargets);
-//                    $plts[i].lastMoveTime = $elapsedTime;
-//
-//                    if ($plts[i].xfirst) {
-//                        if ($plts[i].currentCol != $plts[i].goalCol) {
-//                            if ($plts[i].goalCol < $plts[i].currentCol) {$plts[i].currentCol--;}
-//                            else {$plts[i].currentCol++;}   
-//                        }
-//                        else if ($plts[i].currentRow != $plts[i].goalRow){
-//                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-//                            }
-//                            else {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-//                            } 
-//                        }
-//                    }
-//
-//                    else {
-//                        if ($plts[i].currentRow != $plts[i].goalRow){
-//                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-//                            }
-//                            else {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-//                            } 
-//                        }
-//                        else if ($plts[i].currentCol != $plts[i].goalCol) {
-//                            if ($plts[i].goalCol < $plts[i].currentCol) { $plts[i].currentCol--;}
-//                            else {$plts[i].currentCol++;}                        
-//                        }
-//                    }
-//
-//                    if (($plts[i].currentRow == $plts[i].goalRow) && ($plts[i].currentCol == $plts[i].goalCol)){
-//                        if ($plts[i].status == "returning" && $phase == "tutorial"){
-//                             $('.introjs-tooltipbuttons').css('visibility','visible');
-//                            myintro.nextStep()
-//                        }
-//
-//                        $score = stopPlt($plts[i],$score,$maxScore,ntargets);
-//
-//                    }
                 }
             }
 
             if (($plts[i].status == "moving") || ($plts[i].status == "stopped")) {
+                
                 //check to see if the tutorial target is captured
                 for (j=0; j<ntargets; j++) {
+                    console.log(ntargets);
 
 
-                if ($hvts[j].status == "active") {             
+                if ($hvts[j].status == "active") {   
+                    console.log($plts[0].status)          
                     if (getSq($plts[i].currentRow+$plts[i].currentCol) == $hvts[j].loc){  
+                        console.log('onrightsquare')
                         //capture or false alarm                        
                         //current hvt is "j"
                         

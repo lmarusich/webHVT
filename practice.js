@@ -171,6 +171,7 @@ function tutorial2(){
             $('.introjs-tooltipbuttons').css('visibility','hidden');
             //only enable appropriate button
             $('p.hvtinfo button').prop('disabled', false);
+            var ntargets = 4;
             tutorialtimer(ntargets);
             
         }else if (targetElement.id == 'mapcontainer'){           
