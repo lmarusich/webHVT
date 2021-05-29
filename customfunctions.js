@@ -34,7 +34,7 @@ function resetAll($frame, ntargets){
     
     //stop all previous platoons?
 
-
+    $outoftime = false;
     $targetsdone = 0;
     $maxScore = ntargets * 2;
     

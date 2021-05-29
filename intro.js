@@ -2685,10 +2685,10 @@
 
         if (typeof nextTooltipButton !== "undefined" && nextTooltipButton !== null && /introjs-donebutton/gi.test(nextTooltipButton.className)) {
           // skip button is now "done" button
-          nextTooltipButton.focus();
+          //nextTooltipButton.focus();
         } else if (typeof nextTooltipButton !== "undefined" && nextTooltipButton !== null) {
           //still in the tour, focus on next
-          nextTooltipButton.focus();
+          //nextTooltipButton.focus();
         } // change the scroll of the window, if needed
 
 
