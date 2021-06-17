@@ -18,6 +18,7 @@ var $fasttrack2 = false;
 var $fasttrack2b = false;
 var $fasttrack3 = false;
 var $fasttrack4 = false;
+var $fasttrack5 = false;
 //timelimit 10 min?
 var $timelimit = 10 * 60;
 var $outoftime = false;
@@ -56,22 +57,25 @@ $(document).ready(function(){
             $score = $maxScore;
         }
         
-        // if(document.getElementById("fasttrack1").checked){
-        //     $fasttrack1 = true;
-        // }
+        if(document.getElementById("fasttrack1").checked){
+            $fasttrack1 = true;
+        }
         
-        // if(document.getElementById("fasttrack2").checked){
-        //     $fasttrack2 = true;
-        // }
+        if(document.getElementById("fasttrack2").checked){
+            $fasttrack2 = true;
+        }
         
         if(document.getElementById("timepressure").checked){
             $timepressure = true;
         }
 
-        // if(document.getElementById("fasttrack4").checked){
-        //     $timeunits = 100;
-        // }
+        if(document.getElementById("fasttrack4").checked){
+            $timeunits = 100;
+        }
 
+        if(document.getElementById("fasttrack5").checked){
+            $fasttrack5 = true;
+        }
   
         
         //reset progress bar text and height
@@ -86,7 +90,9 @@ $(document).ready(function(){
         changeHeight();
         
         //need to disable resizing if tutorial is running?
-        if(document.getElementById("fasttrack3").checked){
+        if(document.getElementById("fasttrack5").checked){
+            endRealTest();
+        } else if(document.getElementById("fasttrack3").checked){
             startRealTest();
         } else if(document.getElementById("fasttrack2b").checked){
             startBigPractice();
@@ -270,6 +276,49 @@ $(document).ready(function(){
         $isPaused = false;
         //add a data event here that the game was resumed
         document.getElementById("overlay").style.display = "none";
+    });
+
+    //prevent form submission on pressing enter
+    $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+          event.preventDefault();
+          return false;
+        }
+      });    
+
+    //define questionnaire buttons
+    $('.questionnairebutton').on('click',function(){
+        $myForm = $(this).prevAll('form');
+        if(! $myForm[0].checkValidity()) {
+            // If the form is invalid, submit it. The form won't actually submit;
+            // this will just cause the browser to display the native HTML5 error messages.
+            $myForm.find(':submit').click();
+            return;
+          }      
+        
+        var currentdiv = $(this).closest('div');
+        var formid = $(this).prevAll('form').attr('id');
+ 
+        //need to check what kind of question it is. if radio, the following. if something else, etc.
+        if ($myForm.hasClass('radioform')){
+            $formname = $myForm[0][0].name;
+            output = $('input[name=' + $formname + ']:checked', '#' + formid).val();
+        } else if($myForm.hasClass('textareaform')){
+            output = $myForm.children('textarea').val();
+        } else {
+            output = $myForm.children('input[type=number]').val();
+        }
+        
+        console.log(output)
+        //need to log the data here
+
+        //if last form, end task for real
+        //else, go to next form
+
+        //hide current div, show next div
+        if(typeof output !== "undefined"){
+                currentdiv.hide().next().show();
+        }       
     });
     
    

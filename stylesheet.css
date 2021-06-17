@@ -59,6 +59,22 @@ header {
     display:none;
 }
 
+#questionnaires{
+    display: none;
+    width: 75%;
+    -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+}
+
+#questionnaires>div{
+    display: none;
+}
+
+
+
 .headerPanel {
     height: 100px;
     float: left;

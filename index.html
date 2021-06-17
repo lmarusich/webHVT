@@ -73,33 +73,240 @@
                 <input type="radio" id="losses" name="framing" value="losses">
                 <label for="losses">Losses</label><br>
                 
-                 <!-- <p>
+                 <p>
                 <input type ="checkbox" id = "fasttrack1" name = "fasttrack1" value = "Fasttrack1">
-                <label for="fasttrack1"> Fast-track 1st tutorial?</label></p> -->
-                <!--<p>
+                <label for="fasttrack1"> Fast-track 1st tutorial?</label></p>
+                <p>
                 <input type ="checkbox" id = "fasttrack2" name = "fasttrack2" value = "Fasttrack2">
                 <label for="fasttrack2"> Fast-track 2nd tutorial?</label></p>
-                <p> -->
+                <p>
                 <input type ="checkbox" id = "fasttrack2b" name = "fasttrack2b" value = "Fasttrack2b">
                 <label for="fasttrack2b"> Skip to practice?</label></p>
                 <p>
                 <input type ="checkbox" id = "fasttrack3" name = "fasttrack3" value = "Fasttrack3">
                 <label for="fasttrack3"> Skip to test?</label></p>
                 <p>
-                <!-- <input type ="checkbox" id = "fasttrack4" name = "fasttrack4" value = "Fasttrack4">
+                <input type ="checkbox" id = "fasttrack4" name = "fasttrack4" value = "Fasttrack4">
                 <label for="fasttrack4"> Speed up time?</label></p>
-                <p> -->
+                <p>
+                <input type ="checkbox" id = "fasttrack5" name = "fasttrack5" value = "Fasttrack5">
+                <label for="fasttrack5"> Skip to questionnaires?</label></p>
+                <p>
                 <input type ="checkbox" id = "timepressure" name = "timepressure" value = "timepressure">
                 <label for="timepressure"> Time pressure?</label></p>
              
                 
-                    <button id = "framingbutton">Submit</button> 
+                <button id = "framingbutton">Submit</button> 
               
                 
             </div>
              <div id = "resume">
               <button id="resumebutton">Resume</button>
              </div>
+             <div id = "questionnaires">
+                <div id = "Berlin1">
+                    Please answer the following questions:
+                    <p>
+                        1. Imagine we are throwing a five-sided die 50 times. On average, out of these 50 throws how many times would this five-sided die show an odd number (1, 3 or 5)?
+                        <br>
+                        <form id="berlinform1" class = "questionnaireform radioform">
+                        <input type="radio" id="Berlin1a" name="Berlin1" value="a" required= "required">
+                        <label for="a">5 out of 50 throws</label><br>
+                        <input type="radio" id="Berlin1b" name="Berlin1" value="b">
+                        <label for="b">25 out of 50 throws</label><br>
+                        <input type="radio" id="Berlin1c" name="Berlin1" value="c">
+                        <label for="c">30 out of 50 throws</label><br>
+                        <input type="radio" id="Berlin1d" name="Berlin1" value="d">
+                        <label for="d">None of the above</label>
+                        <input type = "submit" style = "display:none"/>
+                    </form>
+                        <br>
+                        <button id = "berlinbutton1" class = "questionnairebutton">Next</button>  
+                        
+                    </p>
+                </div>
+
+                <div id = "Berlin2">
+                    <p>
+                        2. Out of 1,000 people in a small town 500 are members of a choir. Out of these 500 members in the choir 100 are men. Out of the 500 inhabitants that are not in the choir 300 are men. What is the probability that a randomly drawn man is a member of the choir? Please indicate the probability in percent
+                        <br>
+                        <form id="berlinform2" class = "questionnaireform radioform">
+                        <input type="radio" id="Berlin2a" name="Berlin2" value="a" required>
+                        <label for="a">10%</label><br>
+                        <input type="radio" id="Berlin2b" name="Berlin2" value="b">
+                        <label for="b">25%</label><br>
+                        <input type="radio" id="Berlin2c" name="Berlin2" value="c">
+                        <label for="c">40%</label><br>
+                        <input type="radio" id="Berlin2d" name="Berlin2" value="d">
+                        <label for="d">None of the above</label>
+                        <input type = "submit" style = "display:none"/>
+                    </form>
+                        <br>
+                        <button id = "berlinbutton2" class = "questionnairebutton">Submit</button> 
+                        
+                    </p>
+                    
+                </div>
+                <div id = "Berlin3">
+                    <p>
+                        3. Imagine we are throwing a loaded die (6 sides). The probability that the die shows a 6 is twice as high as the probability of each of the other numbers. On average, out of these 70 throws, about how many times would the die show the number 6?
+                        <br>
+                        <form id="berlinform3" class = "questionnaireform radioform">
+                        <input type="radio" id="Berlin3a" name="Berlin3" value="a" required>
+                        <label for="a">20 out of 70 throws</label><br>
+                        <input type="radio" id="Berlin3b" name="Berlin3" value="b">
+                        <label for="b">23 out of 70 throws</label><br>
+                        <input type="radio" id="Berlin3c" name="Berlin3" value="c">
+                        <label for="c">35 out of 70 throws</label><br>
+                        <input type="radio" id="Berlin3d" name="Berlin3" value="d">
+                        <label for="d">None of the above</label>
+                        <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "berlinbutton3" class = "questionnairebutton">Submit</button> 
+                    </p>
+                </div>
+
+                <div id = "Berlin4">
+                    <p>
+                        4. In a forest 20% of mushrooms are red, 50% brown and 30% white. A red mushroom is poisonous with a probability of 20%. A mushroom that is not red is poisonous with a probability of 5%. What is the probability that a poisonous mushroom in the forest is red?
+                        <br>
+                        <form id="berlinform4" class = "questionnaireform radioform">
+                        <input type="radio" id="Berlin4a" name="Berlin4" value="a" required>
+                        <label for="a">4%</label><br>
+                        <input type="radio" id="Berlin4b" name="Berlin4" value="b">
+                        <label for="b">20%</label><br>
+                        <input type="radio" id="Berlin4c" name="Berlin4" value="c">
+                        <label for="c">50%</label><br>
+                        <input type="radio" id="Berlin4d" name="Berlin4" value="d">
+                        <label for="d">None of the above</label>
+                        <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "berlinbutton4" class = "questionnairebutton">Submit</button> 
+                    </p>
+                </div>
+                <div id = "Demo1">
+                    Please answer the following questions:
+                    <p>
+                        What is your age?
+                        <br>
+                        <form id="demoform1" class = "questionnaireform radioform">
+                        <input type="radio" id="Demo1a" name="Demo1" value="a" required>
+                        <label for="a">18-24</label><br>
+                        <input type="radio" id="Demo1b" name="Demo1" value="b">
+                        <label for="b">25-34</label><br>
+                        <input type="radio" id="Demo1c" name="Demo1" value="c">
+                        <label for="c">35-44</label><br>
+                        <input type="radio" id="Demo1d" name="Demo1" value="d">
+                        <label for="d">45-54</label><br>
+                        <input type="radio" id="Demo1e" name="Demo1" value="e">
+                        <label for="c">55-64</label><br>
+                        <input type="radio" id="Demo1f" name="Demo1" value="f">
+                        <label for="d">65+</label>
+                        <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "demobutton1" class = "questionnairebutton">Next</button> 
+                    </p>
+                </div>
+                <div id = "Demo2">
+                    <p>
+                        What is your gender?
+                        <br>
+                        <form id="demoform2" class = "questionnaireform radioform">
+                        <input type="radio" id="Demo2a" name="Demo2" value="a" required>
+                        <label for="a">Male</label><br>
+                        <input type="radio" id="Demo2b" name="Demo2" value="b">
+                        <label for="b">Female</label><br>
+                        <input type="radio" id="Demo2c" name="Demo2" value="c">
+                        <label for="c">Nonbinary/other</label><br>
+                        <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "demobutton2" class = "questionnairebutton">Next</button> 
+                    </p>
+                </div>
+                <div id = "Demo3">
+                    <p>
+                        What is the highest level of education you have completed?
+                        <br>
+                        <form id="demoform3" class = "questionnaireform radioform">
+                            <input type="radio" id="Demo3a" name="Demo3" value="a" required>
+                            <label for="a">Less than high school degree</label><br>
+                            <input type="radio" id="Demo3b" name="Demo3" value="b">
+                            <label for="b">High school degree or equivalent (e.g., GED)</label><br>
+                            <input type="radio" id="Demo3c" name="Demo3" value="c">
+                            <label for="c">Some college but no degree</label><br>
+                            <input type="radio" id="Demo3d" name="Demo3" value="d" required>
+                            <label for="d">Associate degree</label><br>
+                            <input type="radio" id="Demo3e" name="Demo3" value="e">
+                            <label for="e">Bachelor degree</label><br>
+                            <input type="radio" id="Demo3f" name="Demo3" value="f">
+                            <label for="f">Graduate degree</label><br>
+                            <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "demobutton3" class = "questionnairebutton">Next</button> 
+                    </p>
+                </div>
+                <div id = "Freeresponse1">
+                    Please answer the following questions.
+                    <p>
+                        What (if any) strategies did you use to complete this task?
+                        <br>
+                        <form id="frform1" class = "questionnaireform textareaform">
+                            <textarea name="fr1" rows="10" cols="30" placeholder="I tended to..." required></textarea>
+                            <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "frbutton1" class = "questionnairebutton">Next</button> 
+                    </p>
+                </div>
+                <div id = "Freeresponse2">
+                    <p>
+                        When you chose a HIGH Value Target (HVT), what was the probability the target would be captured (not a false alarm)?
+                        <br>
+                        <form id="frform2" class = "questionnaireform numform">
+                            <label for="hvtprob">Probability (0-100%):</label>
+                            <input type="number" id="hvtprob" name="hvtprob" min="0" max="100" required>
+                            %
+                            <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "frbutton2" class = "questionnairebutton">Next</button> 
+                    </p>
+                </div>
+                <div id = "Freeresponse3">
+                    <p>
+                        When you chose a LOW Value Target (LVT), what was the probability the target would be captured (not a false alarm)?
+                        <br>
+                        <form id="frform3" class = "questionnaireform numform">
+                            <label for="hvtprob">Probability (0-100%):</label>
+                            <input type="number" id="lvtprob" name="lvtprob" min="0" max="100" required>
+                            %
+                            <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "frbutton3" class = "questionnairebutton">Next</button> 
+                    </p>
+                </div>
+                <div id = "Freeresponse4">
+                    <p>
+                       Do you have any other comments about the task?
+                        <br>
+                        <form id="frform4" class = "questionnaireform textareaform">
+                            <textarea name="fr4" rows="10" cols="30"></textarea>
+                            <input type = "submit" style = "display:none"/>
+                        </form>
+                        <br>
+                        <button id = "frbutton3" class = "questionnairebutton">Next</button> 
+                    </p>
+                </div>
+                        
+
+
+            </div>
         </div> 
         <div id = "mapcontainer">
         <div id="colNames"></div>

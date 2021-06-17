@@ -327,6 +327,7 @@ function startBigPractice(){
                 keyboardNavigation: false,
                 exitOnOverlayClick: false,
                 showBullets: false,
+                doneLabel: 'Next',
                 steps: [
                     {intro: message},
                     {intro: "Press 'Next' to begin your first real block"}
@@ -348,7 +349,14 @@ function endRealTest(endmsg){
            
     myintro4.onafterchange(function(targetElement){      
         
-    }).setOptions({
+    }).onexit(function() {
+        //do demographics, berlin numeracy, free response
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("resume").style.display = "none";
+        document.getElementById("questionnaires").style.display = "block";
+        document.getElementById("Berlin1").style.display = "block";
+
+}).setOptions({
             keyboardNavigation: false,
             exitOnOverlayClick: false,
             showBullets: false,
