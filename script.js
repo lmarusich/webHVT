@@ -45,6 +45,11 @@ data2 = "{events:[}";
 
 
 $(document).ready(function(){
+
+    $('#consentbutton').on('click',function() {
+        $('#consentdiv').hide();
+        $('#frameoptions').show();
+    });
     
     //get framing condition
     $('#framingbutton').on('click',function() {

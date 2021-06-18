@@ -20,6 +20,7 @@ header {
 }
 
 #overlay {
+    overflow: auto;
   position: fixed; /* Sit on top of the page content */
   display: block; /* Hidden by default */
   width: 100%; /* Full width (cover the whole page) */
@@ -53,6 +54,14 @@ header {
   bottom: 0;
   z-index: 10;
     
+}
+
+#consentdiv {
+    width: 90%;
+}
+
+#frameoptions {
+    display: none;
 }
 
 #resume{
