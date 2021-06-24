@@ -1,9 +1,9 @@
 function startTutorial($frame) {
     
-    console.log($frame);
-    //create tutorial timer
-    
     $phase = "tutorial";
+    var tempdataobj = {event: {type: "starttutorial"}}
+    console.log(JSON.stringify(tempdataobj));
+    //submit(JSON.stringify(tempdataobj))
     
     if ($fasttrack1){
         $gotostep = 17;

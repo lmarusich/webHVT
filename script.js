@@ -1,13 +1,3 @@
-//define variables
-//configure display
-
-//start tutorial
-//start mini-practice
-//start second tutorial
-//start practice
-//start test block
-//start test block 2?
-
 //test variables
 var $phase = "tutorial";
 var $timepressure = false;
@@ -53,8 +43,6 @@ $(document).ready(function(){
     
     //get framing condition
     $('#framingbutton').on('click',function() {
-        //var nameValue = document.getElementById("uniqueID").value;
-        //add a data event here that the game was resumed
         if(document.getElementById("gains").checked){
             $frame = "+";
         } else {
@@ -81,6 +69,16 @@ $(document).ready(function(){
         if(document.getElementById("fasttrack5").checked){
             $fasttrack5 = true;
         }
+
+        //write out conditions to data?
+        //browser info here?
+        var tempdataobj = {
+            session: {
+                framing: $frame,
+                timepressure: $timepressure
+        }};
+        console.log(JSON.stringify(tempdataobj));
+        //submit(JSON.stringify(tempdataobj))
   
         
         //reset progress bar text and height
@@ -175,7 +173,8 @@ $(document).ready(function(){
         $(this).parent().children('a').removeClass('disabled');
         
         var tempdataobj = {time: $elapsedTime, type: "marktarget", target: $('#cbPanel li').index($(this).parent().parent()), mark: $(this).attr('class')} 
-        
+        console.log(tempdataobj)
+        a = tempdataobj;
         data2 += "," + JSON.stringify(tempdataobj);
         
         $(this).addClass('disabled');
