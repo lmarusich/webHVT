@@ -835,8 +835,7 @@ function tutorialtimer(ntargets) {
                             $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
                             var tempdataobj = {event: {phase: $phase, time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j}};
                             console.log(JSON.stringify(tempdataobj));
-                            //submit(JSON.stringify(tempdataobj))
-                            //data2 += "," + JSON.stringify(tempdataobj);    
+                            //submit(JSON.stringify(tempdataobj))    
                         }
                         else {
                             $hvts[j].status = "lost";
@@ -846,8 +845,9 @@ function tutorialtimer(ntargets) {
                                 }
                             }
                             $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
-                            var tempdataobj = {time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j};
-                            //data2 += "," + JSON.stringify(tempdataobj); 
+                            var tempdataobj = {event: {phase: $phase, time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j}};
+                            console.log(JSON.stringify(tempdataobj));
+                            //submit(JSON.stringify(tempdataobj)); 
                         }
                         if ($plts[i].status == "moving") {
                             $score = stopPlt($plts[i],$score,$maxScore,ntargets);

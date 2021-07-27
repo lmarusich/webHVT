@@ -321,6 +321,9 @@ $(document).ready(function(){
         }
             
             console.log(output)
+            var tempdataobj = {questionnaireoutput: {type: $(this).parent('div').attr('id'), response: output}}
+            console.log(JSON.stringify(tempdataobj));
+            //submit(JSON.stringify(tempdataobj))
         //need to log the data here
 
         //if last form, end task for real
