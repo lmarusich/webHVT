@@ -65,6 +65,10 @@ for (var i = 0; i < generictext.length; i++) {
 function startPractice() {
     
     $phase = "practice"
+    var tempdataobj = {event: {type: "startpractice1"}}
+    console.log(JSON.stringify(tempdataobj));
+    //submit(JSON.stringify(tempdataobj))
+
     var ntargets = 2;
     
     //reset from tutorial
@@ -94,6 +98,9 @@ function startPractice() {
 function tutorial2(){
     
     $phase = 'practice2';
+    var tempdataobj = {event: {type: "starttutorial2"}}
+    console.log(JSON.stringify(tempdataobj));
+    //submit(JSON.stringify(tempdataobj))
     
     if ($fasttrack2){
         $gotostep = 21;
@@ -109,10 +116,8 @@ function tutorial2(){
         headingtext = lossheading;
     }
 
-    console.log($timepressure)
     if ($timepressure){
         timertext = "This timer will show how long you have to complete the task. It will turn red when you have 2 minutes left."
-
     }
     
     var ntargets = 4;
@@ -208,7 +213,6 @@ function tutorial2(){
     }).onexit(function() {
 //        clearInterval(myvar);
         startBigPractice();
-        console.log('2nd tutorial over');
 }).setOptions({
             keyboardNavigation: false,
             exitOnOverlayClick: false,
@@ -268,6 +272,9 @@ function tutorial2(){
 function startBigPractice(){
     
     $phase = "bigpractice"
+    var tempdataobj = {event: {type: "startbigpractice"}}
+    console.log(JSON.stringify(tempdataobj));
+    //submit(JSON.stringify(tempdataobj))
     var ntargets = 4;
 
     if ($timepressure){
@@ -354,7 +361,8 @@ function endRealTest(endmsg){
         document.getElementById("overlay").style.display = "block";
         document.getElementById("resume").style.display = "none";
         document.getElementById("questionnaires").style.display = "block";
-        document.getElementById("Berlin1").style.display = "block";
+        onLoad();
+        document.getElementById("nasatlx").style.display = "block";
 
 }).setOptions({
             keyboardNavigation: false,

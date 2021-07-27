@@ -30,10 +30,6 @@ var $targetsdone = 0;
 var $isPaused = false;
 var letter = 'A'.charCodeAt(0);
 
-//data0 = condition (time pressure, gains/losses, etc.)
-data2 = "{events:[}";
-
-
 $(document).ready(function(){
 
     $('#consentbutton').on('click',function() {
@@ -155,9 +151,10 @@ $(document).ready(function(){
     
     
     //change appearance when a dropdown item is selected
-    //$('#cbPanel a').on('click', function() {
     $(document).on('click','#cbPanel a',function(){
-        //if clicked on "captured" add a checkbox
+        //if clicked on "captured" add a check
+        //if clicked on "missed" add an x
+        //if clicked on "active" remove all that 
         if ($(this).hasClass('p-captured')){
             $(this).parent().parent().children('span').html('&#10004');
             $(this).parent().parent().children('span').addClass('show');
@@ -172,14 +169,12 @@ $(document).ready(function(){
         
         $(this).parent().children('a').removeClass('disabled');
         
-        var tempdataobj = {time: $elapsedTime, type: "marktarget", target: $('#cbPanel li').index($(this).parent().parent()), mark: $(this).attr('class')} 
+        var tempdataobj = {event:{phase: $phase, time: $elapsedTime, type: "marktarget", target: $('#cbPanel li').index($(this).parent().parent()), mark: $(this).attr('class')} }
         console.log(tempdataobj)
-        a = tempdataobj;
-        data2 += "," + JSON.stringify(tempdataobj);
+        //submit(JSON.stringify(tempdataobj))
         
         $(this).addClass('disabled');
-        //if clicked on "missed" add an x
-        //if clicked on "active" remove all that    
+   
     });
     
     // Close the dropdown menu if the user clicks outside of it
@@ -211,7 +206,6 @@ $(document).ready(function(){
     });
     
     $('.mapSquare').on("mouseover",function() {   
-        //console.log('hover');
         $('.mapSquare').removeClass('hover');
         var $sqNum = $(this).attr('id').substr(2);              
         if($('.plt').hasClass("highlight")) {
@@ -241,10 +235,10 @@ $(document).ready(function(){
                     
                     startPlt($plts,$whichPlt-1);
                     
-                    var tempdataobj = {time: $elapsedTime, type: "assignunit", unit: $whichPlt-1, currentSq: $plts[$whichPlt - 1].currentRow + $plts[$whichPlt - 1].currentCol, goalSq: $goalSq}
-                    
-                    data2 += "," + JSON.stringify(tempdataobj);
-                              
+                    var tempdataobj = {event: {phase: $phase, time: $elapsedTime, type: "assignunit", unit: $whichPlt-1, currentSq: $plts[$whichPlt - 1].currentRow + $plts[$whichPlt - 1].currentCol, goalSq: $goalSq}}
+                    console.log(JSON.stringify(tempdataobj));
+                    //submit(JSON.stringify(tempdataobj))
+                                                  
                     //check for hidden units in same square, make them visible
                     if (($currSq).children('.plt.hidden').length > 0) {
                         $currSq.children('.plt.hidden').first().toggleClass('hidden');
@@ -253,32 +247,31 @@ $(document).ready(function(){
             }
         }
     });
-    
-    //need to check if the below is still needed
-    $('input[type=checkbox]').on('click',function() {
-        if ($(this).attr('name') == 'hvtCB'){
-            $(this).parent().toggleClass('checked');
-        }   
-    });
-    
+       
     $('#status button').on('click',function() {
         var whichPlt = parseInt($(this).parent().attr('id').substr(6))-1;
-        var tempdataobj = {time: $elapsedTime, type: "stopunit", unit: whichPlt, currentSq: $plts[whichPlt].currentRow + $plts[whichPlt].currentCol};
-        data2 += "," + JSON.stringify(tempdataobj);
+        var tempdataobj = {event: {phase: $phase, time: $elapsedTime, type: "stopunit", unit: whichPlt, currentSq: $plts[whichPlt].currentRow + $plts[whichPlt].currentCol}};
+        console.log(JSON.stringify(tempdataobj));
+        //submit(JSON.stringify(tempdataobj))
         $score = stopPlt($plts[whichPlt],whichPlt,$score,$maxScore);
     });
     
     //define pause button
     $('#pause').on('click',function() {
         $isPaused = true;
-        //add a data event here that the game was paused
+        
+        var tempdataobj = {event: {phase: $phase, type: "pause"}};
+        console.log(JSON.stringify(tempdataobj));
+        //submit(JSON.stringify(tempdataobj))
         document.getElementById("overlay").style.display = "block";
     });
     
     //define resume button
     $('#resume').on('click',function() {
         $isPaused = false;
-        //add a data event here that the game was resumed
+        var tempdataobj = {event: {phase: $phase, type: "resume"}};
+        console.log(JSON.stringify(tempdataobj));
+        //submit(JSON.stringify(tempdataobj))
         document.getElementById("overlay").style.display = "none";
     });
 
@@ -292,28 +285,42 @@ $(document).ready(function(){
 
     //define questionnaire buttons
     $('.questionnairebutton').on('click',function(){
-        $myForm = $(this).prevAll('form');
-        if(! $myForm[0].checkValidity()) {
-            // If the form is invalid, submit it. The form won't actually submit;
-            // this will just cause the browser to display the native HTML5 error messages.
-            $myForm.find(':submit').click();
-            return;
-          }      
+
+        if(this.id == "nasatlxbutton"){
+            // Check to be sure they click on every scale
+            for (var i = 0; i < NUM_SCALES; i++){
+                if (!results_rating[i]){
+                    alert('A value must be selected for every scale!');
+                    return false;
+                }
+            }
+            
+            output = results_rating;
+
+        } else{
         
-        var currentdiv = $(this).closest('div');
-        var formid = $(this).prevAll('form').attr('id');
- 
-        //need to check what kind of question it is. if radio, the following. if something else, etc.
-        if ($myForm.hasClass('radioform')){
-            $formname = $myForm[0][0].name;
-            output = $('input[name=' + $formname + ']:checked', '#' + formid).val();
-        } else if($myForm.hasClass('textareaform')){
-            output = $myForm.children('textarea').val();
-        } else {
-            output = $myForm.children('input[type=number]').val();
+            $myForm = $(this).prevAll('form');
+            if(! $myForm[0].checkValidity()) {
+                // If the form is invalid, submit it. The form won't actually submit;
+                // this will just cause the browser to display the native HTML5 error messages.
+                $myForm.find(':submit').click();
+                return;
+            }
+                      
+            var formid = $(this).prevAll('form').attr('id');
+    
+            //need to check what kind of question it is. if radio, the following. if something else, etc.
+            if ($myForm.hasClass('radioform')){
+                $formname = $myForm[0][0].name;
+                output = $('input[name=' + $formname + ']:checked', '#' + formid).val();
+            } else if($myForm.hasClass('textareaform')){
+                output = $myForm.children('textarea').val();
+            } else {
+                output = $myForm.children('input[type=number]').val();
+            }
         }
-        
-        console.log(output)
+            
+            console.log(output)
         //need to log the data here
 
         //if last form, end task for real
@@ -321,312 +328,18 @@ $(document).ready(function(){
 
         //hide current div, show next div
         if(typeof output !== "undefined"){
-                currentdiv.hide().next().show();
-        }       
+            var currentdiv = $(this).closest('div');
+            currentdiv.hide().next().show();
+        }  
+    
     });
     
    
 });
     
-
-    
-    
-    
-    
     
 
-    
-//    //define pause button
-//    $('#pause').on('click',function() {
-//        $isPaused = true;
-//        //add a data event here that the game was paused
-//        document.getElementById("overlay").style.display = "block";
-//    });
-//    
-//    //define resume button
-//    $('#resume').on('click',function() {
-//        $isPaused = false;
-//        //add a data event here that the game was resumed
-//        document.getElementById("overlay").style.display = "none";
-//    });
-//    
-//
-//    
-//    //make array of 2 intel groups
-//    for (i=0; i<2; i++){
-//        $intels[i] = new Intel(i,$srcAccuracy[i],$srcRisk[i]);
-//    }
-//    
-//
-//
-//
-//    //make array of xx targets
-//    for (i=0; i<$nHvts; i++){
-//        var $temploc = Math.floor(Math.random() * 196);
-//        var $excluded = [75,76,77,78,89,90,91,92,103,104,105,106,117,118,119,120];
-//        if (i > 0) {$excluded.push($hvts[i-1].loc);} //prevent 2 hvts at same loc in a row
-//        while ($excluded.indexOf($temploc) != -1){
-//            $temploc = Math.floor(Math.random() * 196);
-//        }
-//        var $temptime = i*hvtInterval + $startTime;
-//        $hvts[i] = new target($temploc,$temptime);
-//    }
-//    
-//    //record the hvt array
-//    //submit('{"hvts":' + JSON.stringify($hvts) + '}');
-//    data1 = '{"hvts":' + JSON.stringify($hvts) + '}';
-//    //check that this can be parsed, don't know what i'm doing
-//
 
-//    
-//
-//
-//    
 
-//    
 
-//    
-//
-//    
-//    mytimer = setInterval(function() {
-//        if ($isPaused == false){
-//        $elapsedTime = timer($elapsedTime);
-//        //check if any platoons are moving
-//        for (i=0; i<$plts.length; i++) {
-//            if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
-//                if ($elapsedTime >= $plts[i].lastMoveTime + 3){
-//                    //move the platoon (update current row and current col)
-//                    $plts[i].lastMoveTime = $elapsedTime;
-//                    
-//                    if ($plts[i].xfirst) {
-//                        if ($plts[i].currentCol != $plts[i].goalCol) {
-//                            if ($plts[i].goalCol < $plts[i].currentCol) {$plts[i].currentCol--;}
-//                            else {$plts[i].currentCol++;}   
-//                        }
-//                        else if ($plts[i].currentRow != $plts[i].goalRow){
-//                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-//                            }
-//                            else {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-//                            } 
-//                        }
-//                    }
-//                       
-//                    else {
-//                        if ($plts[i].currentRow != $plts[i].goalRow){
-//                            if ($plts[i].goalRow.charCodeAt(0) < $plts[i].currentRow.charCodeAt(0)) {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) - 1);
-//                            }
-//                            else {
-//                                $plts[i].currentRow = String.fromCharCode($plts[i].currentRow.charCodeAt(0) + 1);
-//                            } 
-//                        }
-//                        else if ($plts[i].currentCol != $plts[i].goalCol) {
-//                            if ($plts[i].goalCol < $plts[i].currentCol) { $plts[i].currentCol--;}
-//                            else {$plts[i].currentCol++;}                        
-//                        }
-//                    }
-//                     
-//                    if (($plts[i].currentRow == $plts[i].goalRow) && ($plts[i].currentCol == $plts[i].goalCol)){
-//                        $score = stopPlt($plts,i,$score,$maxScore);
-//                    }
-//                }
-//            }
-//            
-//            if (($plts[i].status == "moving") || ($plts[i].status == "stopped")) {
-//                //check to see if any targets are captured
-//                
-//                for (j=0; j<$nHvts; j++) {
-//                    if ($hvts[j].status == "active") {             
-//                        if (getSq($plts[i].currentRow+$plts[i].currentCol) == $hvts[j].loc){  
-//                            //capture or false alarm                        
-//                            //current hvt is "j"
-//                            
-//                            var $capture = -1;
-//                            var $hvtType = "HVT ";
-//                            
-//                            if ($hvts[j].type == "low") {
-//                                //make capture 100%
-//                                $capture = 1;
-//                                $hvtType = "LVT "
-//                            } else if ($hvts[j].type == "high") {
-//                                //make false alarm 50% likely, then hvt goes away
-//                                $capture = Math.floor(Math.random() * 2);
-//                                console.log('hvt' + j + $capture);  
-//                            } else {
-//                                //shouldn't be eligible to be captured
-//                            }
-//
-//                            if ($capture > 0) {
-//                                $hvts[j].status = "captured";
-//                                
-//                                
-//                                if ($hvts[j].type == "low") {
-//                                    $plts[i].points = $lvtPoints;
-//                                    
-//                                } else if ($hvts[j].type == "high") {
-//                                    if ($frame == "+"){
-//                                        $plts[i].points = $hvtPoints;
-//                                    }
-//                                }
-//                                $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " captured (" + $frame + $plts[i].points + ")";
-//                                var tempdataobj = {time: $elapsedTime, type: "targetcapture", points: $plts[i].points, unit: i, target: j};
-//                                data2 += "," + JSON.stringify(tempdataobj);    
-//                            }
-//                            else {
-//                                $hvts[j].status = "lost";
-//                                if ($hvts[j].type == "high"){
-//                                    if ($frame == "-"){
-//                                        $plts[i].points = $hvtPoints;
-//                                    }
-//                                }
-//                                $plts[i].msg = "Unit " + (i+1) + ": " + $hvtType + (j+1) + " false alarm (" + $frame + $plts[i].points + ")";
-//                                var tempdataobj = {time: $elapsedTime, type: "targetloss", points: $plts[i].points, unit: i, target: j};
-//                                data2 += "," + JSON.stringify(tempdataobj); 
-//                            }
-//                            if ($plts[i].status == "moving") {
-//                                $score = stopPlt($plts,i,$score,$maxScore);
-//                            }
-//                            $plts[i].status = "returning";
-//                            var $goalSq = parseInt($plts[i].homeSq.substr(3)) + 1;
-//                            $plts[i].goalRow = getCoords($goalSq).substr(0,1);
-//                            $plts[i].goalCol = parseInt(getCoords($goalSq).substr(1));
-//                            $plts[i].lastMoveTime = $elapsedTime;
-//                            $('#plt' + (i+1)).fadeOut(0);
-//                            startPlt($plts,i);
-//                            break
-//                        }
-//                    }
-//                }   
-//            }
-//        }
-//        
-//        //activate targets, add intel notifications
-//        for (i=0; i<$nHvts; i++){
-//            if ($elapsedTime == $hvts[i].startTime){
-//                //$hvts[i].status = "active";
-//                
-//                //go through 2 intel boxes
-//                for (j=0; j<2; j++){
-//                    
-//                    var $reportedSq = getCoords($hvts[i].loc + 1)               
-//                    var $targRow = $reportedSq.substr(0,1).charCodeAt(0) - letter;
-//                    var $targCol = parseInt($reportedSq.substr(1)) - 1;
-//                    
-//                    var $accuracy = $srcAccuracy[j];
-//                    var $possibleSqs = [];
-//                
-//                    if ($accuracy < 3) {
-//                        //get 8 surrounding squares (less if near edge) + indicated square (9 possibilites)
-//                        for (k=-1; k<2; k++){
-//                            for (l=-1; l<2; l++) {
-//                                $tempRow = $targRow + k;
-//                                $tempCol = $targCol + l;
-//                                //make sure it's within bounds
-//                                if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
-//                                    $tempRow = String.fromCharCode($tempRow + letter);
-//                                    $tempCol = $tempCol + 1;
-//                                    $possibleSqs.push($tempRow + $tempCol);
-//                                }
-//                            }
-//                        }
-//                        
-//                        if ($accuracy == 1) {
-//                            //.75 correct square, .25 one of the surrounding 9
-//                            var $randNum = Math.floor(Math.random() * 4);
-//                            if ($randNum < 3) {
-//                                //reported square is accurate
-//                            }
-//                            else {
-//                                var $randNum = Math.floor(Math.random() * $possibleSqs.length);
-//                                $reportedSq = $possibleSqs[$randNum];
-//                            }
-//                        }
-//                        else if ($accuracy == 2) {
-//                            //pick one of these 9 randomly
-//                            var $randNum = Math.floor(Math.random() * $possibleSqs.length);
-//                            $reportedSq = $possibleSqs[$randNum];
-//                        }
-//                    }
-//                        
-//                    else if ($accuracy == 3) {
-//                        //get 25 surrounding squares (less if near edge)
-//                        //let's not do this one
-//                        for (k=-2; k<3; k++){
-//                            for (l=-2; l<3; l++) {
-//                                $tempRow = $targRow + k;
-//                                $tempCol = $targCol + l;
-//                                //make sure it's within bounds
-//                                if (($tempRow >= 0) && ($tempRow < 14) && ($tempCol >= 0) && ($tempCol <14)){
-//                                    $tempRow = String.fromCharCode($tempRow + letter);
-//                                    $tempCol = $tempCol + 1;
-//                                    $possibleSqs.push($tempRow + $tempCol);
-//                                }
-//                            }
-//                        }
-//                        //pick one of these randomly
-//                        var $randNum = Math.floor(Math.random() * $possibleSqs.length);
-//                        $reportedSq = $possibleSqs[$randNum];
-//                    }
-//                    
-//                    var $risk = $srcRisk[j];
-//                    
-//                    //think about populating this info on the spot instead of ahead of time, to mitigate some cheating
-//                    if ($risk == "high"){
-//                        $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">HVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
-//                    } else {
-//                        $('#intel' + (j+1)).append('<p class = "hvtinfo" id = "info' + i +'">LVT' + (i+1) + ' sighted at <span id="span' + i + '">' + $reportedSq + '</span></p>');
-//                    }                         
-//                    
-//                    $('#intel' + (j+1) + ' #info' + i).append('<button>Show</button>');
-//                    $('#intel' + (j+1) + ' #info' + i).on('click', 'button', function() {
-//                        
-//                        //which hvt line is this?
-//                        var $temphvt = $(this).parent().attr('id').substr(4);
-//                        $hvts[$temphvt].status = "active";
-//                                                
-//                        //show location info, disable button in other intel box
-//                        $('.intelTBs #info' + $temphvt).find('button').prop('disabled', true);
-//                        $(this).hide();
-//                        $(this).parent().find('span').fadeIn('fast');            
-//                        
-//                        $('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', 'lightgray');
-//                                            
-//                        //depending on which source was clicked, assign whether hvt type is low or high value
-//                        var $tempintel = $(this).parent().parent().attr("id").substr(5)-1;
-//                        if ($intels[$tempintel].risk == "low"){
-//                            $hvts[$temphvt].type = "low";
-//                        } else {
-//                            $hvts[$temphvt].type = "high";
-//                        }
-//                        
-//                        var tempdataobj = {time: $elapsedTime, type: "choosesource", target: $temphvt, risk: $intels[$tempintel].risk, reportedSq: $(this).parent().find('span')[0].innerHTML}                                                                   
-//                        data2 += "," + JSON.stringify(tempdataobj);
-//                    });
-//                    
-//                }
-//            }
-//        } 
-//        }
-//    }, 1000);
-//});
-//
 
-//
-//
-//
-//
-//
-//function endGame() {
-//    $('#captureTB').append('<p>Finished!</p>');
-//    clearInterval(mytimer);
-//}
-//    
-//
-//
-//    
-//
-//
-//
-//

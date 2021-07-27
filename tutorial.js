@@ -1,7 +1,7 @@
 function startTutorial($frame) {
     
     $phase = "tutorial";
-    var tempdataobj = {event: {type: "starttutorial"}}
+    var tempdataobj = {event: {type: "starttutorial1"}}
     console.log(JSON.stringify(tempdataobj));
     //submit(JSON.stringify(tempdataobj))
     
@@ -31,7 +31,6 @@ function startTutorial($frame) {
         
         switch(targetElement.id) {
             case "":
-                console.log(this._currentStep)
                 if (this._currentStep == 12){
                     $li1 = $("#cbPanel>ul>li").first();
                     if (!($li1.children('span').html().charCodeAt(0) == 10004 & $li1.children('span').hasClass('show'))){
@@ -154,7 +153,7 @@ function startTutorial($frame) {
             },
             {   //8
                 element: document.querySelector('#capturePanel'),
-                intro: 'Here is where you see if you captured a target, or if it was a false alarm...'
+                intro: 'These Capture Reports will tell you if the individual you captured was actually a target, or if it was just a false alarm.'
             },
             {   //11
                 element: document.querySelector('#scorePanel'),
@@ -162,7 +161,7 @@ function startTutorial($frame) {
             },
             {   //9
                 element: document.querySelector('#cbPanel'),
-                intro: 'Stay organized! Mark whether you captured or missed each target...'
+                intro: 'Stay organized! Mark whether you captured or missed each target'
             },
             {   //10
                 element: document.querySelector('li'),

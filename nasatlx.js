@@ -1,11 +1,3 @@
-
-<html>
-<head>
-<title>NASA Task Load Index</title>
-
-<script language="JavaScript" type="text/javascript">
-
-
 // Create a set of parallel arrays for each of the scales
 var scale      = new Array();
 var left       = new Array();
@@ -14,33 +6,33 @@ var def        = new Array();
 var NUM_SCALES = 6;
 
 scale[0]  = "Mental Demand"; 
-left[0]   = "Low";
-right[0]  = "High";
+left[0]   = "Very Low";
+right[0]  = "Very High";
 def[0]    = "How mentally demanding was the task?";
 
 scale[1]  = "Physical Demand"; 
-left[1]   = "Low";
-right[1]  = "High";
+left[1]   = "Very Low";
+right[1]  = "Very High";
 def[1]    = "How physically demanding was the task?";
 
 scale[2]  = "Temporal Demand"; 
-left[2]   = "Low";
-right[2]  = "High";
+left[2]   = "Very Low";
+right[2]  = "Very High";
 def[2]    = "How hurried or rushed was the pace of the task?";
 
 scale[3]  = "Performance"; 
-left[3]   = "Good";
-right[3]  = "Poor";
+left[3]   = "Perfect";
+right[3]  = "Failure";
 def[3]    = "How successful were you in accomplishing what you were asked to do?";
 
 scale[4]  = "Effort"; 
-left[4]   = "Low";
-right[4]  = "High";
+left[4]   = "Very Low";
+right[4]  = "Very High";
 def[4]    = "How hard did you have to work to accomplish your level of performance?";
 
 scale[5]  = "Frustration"; 
-left[5]   = "Low";
-right[5]  = "High";
+left[5]   = "Very Low";
+right[5]  = "Very High";
 def[5]    = "How insecure, discouraged, irritated, stressed and annoyed were you?";
 
 
@@ -78,7 +70,8 @@ function getScaleHTML(index)
 
 	// Row 1, just the name of the scale
 	result += '<tr><td colspan="20" class="heading">' + scale[index] + '</td></tr>';
-	result += '<tr><td colspan="20">' + def[index] + '</td></tr>';
+	result += '<tr><td colspan="20" class="def">' + def[index] + '</td></tr>';
+    // result += '<tr height = "5px"></tr>';
 
 	// Row 2, the top half of the scale increments, 20 total columns
 	result += '<tr>';
@@ -116,103 +109,5 @@ function onLoad()
 	}
 }
 
-// Users want to proceed after doing the scales
-function buttonPart1()
-{
-	// Check to be sure they click on every scale
-	for (var i = 0; i < NUM_SCALES; i++)
-	{
-		if (!results_rating[i])
-		{
-			alert('A value must be selected for every scale!');
-			return false;
-		}
-	}
-
-	// Bye bye part 1, hello part 2
-	document.getElementById('div_part1').style.display = 'none'; 
-	console.log(results_rating)
-	return true;
-}
 
 
-</script>
-<style>
-td.bottom
-{
-	width: 0.6cm;
-    height: 0.4cm;
-	border-bottom: 1px solid black;
-	border-left: 1px solid black;
-	border-right: 1px solid black;
-	margin: 0px; 
-	padding: 0px 0px 0px 0px;
-
-}
-
-table.scale
-{
-	margin: 0px;
-	padding: 0px 0px 0px 0px;
-      border-collapse: collapse
-}
-
-td.top1
-{
-	width: 0.6cm;
-      height: 0.4cm;
-	border-top: 1px solid black;
-	border-left: 1px solid black;
-	margin: 0px; 
-	padding: 0px 0px 0px 0px;
-}
-td.top2
-{
-	width: 0.6cm;
-      height: 0.4cm;
-	border-top: 1px solid black;
-	border-right: 1px solid black;
-	margin: 0px; 
-	padding: 0px 0px 0px 0px;
-}
-td.heading
-{
-	font: Bold 14px Arial, Helvetica, sans-serif;
-	text-align: center;
-}
-td.left
-{
-	font: 14px Arial, Helvetica, sans-serif;
-}
-td.right
-{
-	font: 14px Arial, Helvetica, sans-serif;
-	text-align: right;
-}
-
-td.def
-{
-	width: 12cm;	
-	padding: 0px 0px 0px 20px;
-	font: 12px Arial, Helvetica, sans-serif;
-}
-
-</style>
-</head>
-<body onLoad="onLoad();">
-<div id="div_part1">
-
-Click on each scale at the point that best indicates your experience of the task <br />
-<br />
-<div id="scale0"></div>
-<div id="scale1"></div>
-<div id="scale2"></div>
-<div id="scale3"></div>
-<div id="scale4"></div>
-<div id="scale5"></div>
-<br />
-<input class="next" id="next" type="button" value="Continue >>" onClick="buttonPart1();">
-</div>
-
-</body>
-</html>
