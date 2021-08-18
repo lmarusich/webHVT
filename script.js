@@ -141,7 +141,7 @@ $(document).ready(function(){
     for (i=0; i<$nHvts; i++){
        // $('#cbPanel ul').append('<li><input type="checkbox" name="hvtCB">HVT' + (i+1) + '</li>');
 
-        $('#cbPanel ul').append('<li><span>&#10004</span><button class="hvtCB">Target ' + (i + 1) + '&nbsp&#9660</button><div class = "dropdowncontent"><a href = "#" class = "p-active disabled">Active</a><a href = "#" class = "p-captured">Captured</a><a href = "#" class = "p-missed">Missed</a></div></li>'); 
+        $('#cbPanel ul').append('<li><span>&#10004</span><button class="hvtCB">Target ' + (i + 1) + '&nbsp&#9660</button><div class = "dropdowncontent"><a href = "#" class = "p-active disabled">Active</a><a href = "#" class = "p-captured">Captured</a><a href = "#" class = "p-missed">False alarm</a></div></li>'); 
     }
     
     
@@ -332,7 +332,10 @@ $(document).ready(function(){
         //hide current div, show next div
         if(typeof output !== "undefined"){
             var currentdiv = $(this).closest('div');
+            console.log(currentdiv.attr('id'));
+
             currentdiv.hide().next().show();
+
         }  
     
     });

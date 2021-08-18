@@ -51,7 +51,7 @@ function resetAll($frame, ntargets){
     for (i=0; i<ntargets; i++){
        // $('#cbPanel ul').append('<li><input type="checkbox" name="hvtCB">HVT' + (i+1) + '</li>');
 
-        $('#cbPanel ul').append('<li><span>&#10004</span><button class="hvtCB">Target ' + (i + 1) + '&nbsp&#9660</button><div class = "dropdowncontent"><a href = "#" class = "p-active disabled">Active</a><a href = "#" class = "p-captured">Captured</a><a href = "#" class = "p-missed">Missed</a></div></li>'); 
+        $('#cbPanel ul').append('<li><span>&#10004</span><button class="hvtCB">Target ' + (i + 1) + '&nbsp&#9660</button><div class = "dropdowncontent"><a href = "#" class = "p-active disabled">Active</a><a href = "#" class = "p-captured">Captured</a><a href = "#" class = "p-missed">False alarm</a></div></li>'); 
     }
        
     $('#littleoverlay').remove();
@@ -708,10 +708,12 @@ function populateIntel(intel,j,i,reportedsq){
 
         //show location info, disable button in other intel box
         $('.intelTBs #info' + $temphvt).find('button').prop('disabled', true);
+        
         $(this).hide();
         $(this).parent().find('span').fadeIn('fast');            
 
-        $('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', 'lightgray');
+        //$('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', 'lightgray');
+        $('.intelTBs #info' + $temphvt).not($(this).parent()).html("&nbsp");
 
         //depending on which source was clicked, assign whether hvt type is low or high value
         var $tempintel = $(this).parent().parent().attr("id").substr(5)-1;

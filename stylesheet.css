@@ -594,6 +594,10 @@ td.def
     font-size: .8em;
 }
 
+.hvtinfo button:disabled {
+    color: lightgray;
+}
+
 h3 {
     margin: 0;
     text-align: center;

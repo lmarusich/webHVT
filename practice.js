@@ -7,15 +7,15 @@ generictext = [
         'There will be a number of <b>HIGH</b> value targets (HVTs) in the area that you can find and capture. Capturing an HVT adds 2 points to your score.',
         'There will be a number of <b>HIGH</b> value targets (HVTs) escaping the area that you can find and capture. An escaped HVT subtracts 2 points from your score.'
     ],
-    'One intel source provides unreliable information about the location of HVTs.',
+    'One intel source provides information about the location of HVTs.',
     [
-        'Capturing an HVT is worth two (+2) points, but there is a risk of false alarms, where you will earn no (+0) points.',
-        'If you capture an HVT, you will not lose any points (-0), but there is a risk of false alarms, where you will lose two (-2) points.'
+        'Capturing an HVT is worth two <b>(+2)</b> points, but there is a risk of false alarms, where you will earn no <b>(+0)</b> points.',
+        'If you capture an HVT, you will not lose any points <b>(-0)</b>, but there is a risk of false alarms, where you will lose two <b>(-2)</b> points.'
     ],
-    'The other intel source provides very reliable information about the location of LOW value targets (LVTs).',
+    'The other intel source provides information about the location of <b>LOW</b> value targets (LVTs).',
     [
-        'Instead of an HVT, you can choose to capture an LVT, which is worth 1 point.',
-        'Instead of an HVT, you can choose to capture an LVT, and only lose one (-1) point.'
+        'Instead of an HVT, you can choose to capture an LVT, which is worth 1 <b>(+1)</b> point.',
+        'Instead of an HVT, you can choose to capture an LVT, and only lose one <b>(-1)</b> point.'
     ],
     "Let's practice choosing between the two sources of intel",
     'You are able to choose to see location information about an HVT or an LVT',
@@ -29,7 +29,7 @@ generictext = [
     'Choose the HVT again',
     'Assign a unit to capture this HVT',
     [
-        'You earned 0 points because this turned out to be a false alarm.',
+        'You earned 0 points because this turned out to be a false alarm, and the HVT escaped.',
         'You lost 2 points because this turned out to be a false alarm, and the HVT escaped.' 
     ],
     'Now choose the LVT',
