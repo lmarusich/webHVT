@@ -13,7 +13,7 @@ var $fasttrack5 = false;
 var $timelimit = 10 * 60;
 var $outoftime = false;
 var $nHvts = 15;
-var $startTime = 5;
+var $startTime = 3;
 var hvtInterval = 15; //time between successive targets
 var $elapsedTime = 0;
 var $score = 0;
@@ -252,8 +252,10 @@ $(document).ready(function(){
         var whichPlt = parseInt($(this).parent().attr('id').substr(6))-1;
         var tempdataobj = {event: {phase: $phase, time: $elapsedTime, type: "stopunit", unit: whichPlt, currentSq: $plts[whichPlt].currentRow + $plts[whichPlt].currentCol}};
         console.log(JSON.stringify(tempdataobj));
+        console.log("a" + $score)
         //submit(JSON.stringify(tempdataobj))
-        $score = stopPlt($plts[whichPlt],whichPlt,$score,$maxScore);
+        $score = stopPlt($plts[whichPlt],$score,$maxScore);
+        console.log("b" + $score)
     });
     
     //define pause button

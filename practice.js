@@ -44,7 +44,11 @@ generictext = [
         'You earned 1 point for capturing this LVT.',
         'You only lost 1 point because you captured an LVT.'
     ],
-    "Great! Now let's do one more practice run all on your own."
+    [
+        "Great! Now let's do one more practice run all on your own.<p>Remember:<ul><li><b>LVT</b>s are always <b>+1</b></li><li><b>HVT</b>s may be <b>+2</b> or <b>+0</b>.</li></ul></p>",
+        "Great! Now let's do one more practice run all on your own.<p>Remember:<ul><li><b>LVT</b>s are always <b>-1</b></li><li><b>HVT</b>s may be <b>-0</b> or <b>-2</b>.</li></ul></p>"
+
+    ]
 ];
 
 timertext = "This timer will record how long it takes you to complete the task."

@@ -184,7 +184,12 @@ function stopPlt(platoon,$score,$maxScore,ntargets,alreadyended) {
         //need to end the game here if all targets have been found or missed
         if (!alreadyended){
             if ($targetsdone >= ntargets){
-                endGame(ntargets);         
+                
+                console.log('finish score0 ' + $score)
+                endGame(ntargets);
+                return $score
+                console.log('finish score ' + $score)
+                         
             }
         }
         
@@ -233,6 +238,7 @@ function stopPlt(platoon,$score,$maxScore,ntargets,alreadyended) {
     }
     
     $('#plt' + ($index+1)).appendTo('#sq' + $currSq).fadeIn('fast');
+    console.log($score);
    return $score
 }
 
@@ -712,8 +718,8 @@ function populateIntel(intel,j,i,reportedsq){
         $(this).hide();
         $(this).parent().find('span').fadeIn('fast');            
 
-        //$('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', 'lightgray');
-        $('.intelTBs #info' + $temphvt).not($(this).parent()).html("&nbsp");
+        $('.intelTBs #info' + $temphvt).not($(this).parent()).css('color', '#E9E9E9');
+        //$('.intelTBs #info' + $temphvt).not($(this).parent()).html("&nbsp");
 
         //depending on which source was clicked, assign whether hvt type is low or high value
         var $tempintel = $(this).parent().parent().attr("id").substr(5)-1;
@@ -747,7 +753,7 @@ function testtimer(ntargets,phase) {
 
         for (i=0; i<$plts.length; i++) {
             if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
-                if ($elapsedTime >= $plts[i].lastMoveTime + 3){
+                if ($elapsedTime >= $plts[i].lastMoveTime + 2){
                     movePlatoon($plts[i],ntargets);
                 }
             }
@@ -792,7 +798,7 @@ function tutorialtimer(ntargets) {
         for (i=0; i<$plts.length; i++) {
 
             if (($plts[i].status == "moving") || ($plts[i].status == "returning")) {
-                if ($elapsedTime >= $plts[i].lastMoveTime + 3){
+                if ($elapsedTime >= $plts[i].lastMoveTime + 2){
                     //move the platoon (update current row and current col)
                     movePlatoon($plts[i],ntargets);
                 }

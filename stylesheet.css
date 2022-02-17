@@ -596,6 +596,8 @@ td.def
 
 .hvtinfo button:disabled {
     color: lightgray;
+    /* background-color: #E9E9E9; */
+    border-color: lightgray;
 }
 
 h3 {
